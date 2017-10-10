@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
+from torch.nn.functional import binary_cross_entropy as bce
 from torch.autograd import Variable
 from torch.nn.utils import clip_grad_norm
 
@@ -76,7 +77,7 @@ class DAE(nn.Module):
 
 	def rec_loss(self, rec_x, x, loss='BCE'):
 		if loss is 'BCE':
-			return F.binary_cross_entropy(rec_x, x, size_average=True)  #not averaged over mini-batch if size_average=FALSE and is averaged if =True 
+			return bce(rec_x, x, size_average=True)  #not averaged over mini-batch if size_average=FALSE and is averaged if =True 
 		elif loss is 'MSE':
 			return F.mse_loss(rec_x,x, size_average=True)
 		else:
@@ -93,7 +94,52 @@ class DAE(nn.Module):
 
 
 
-# class DIS(nn.Module):
+class DIS_Z(nn.Module):
+
+	'''
+	Discriminate between z_real and z_fake vectors
+	'''
+
+	def __init__(self, nz, prior=torch.randn):
+		super(DIS_Z, self).__init__()
+
+		self.nz = nz
+		self.prior = prior
+
+		self.dis1 = nn.Linear(nz, 1000)
+		self.dis2 = nn.Linear(1000, 1000)
+		self.dis3 = nn.Linear(1000, 1)
+
+	def discriminate(self, z):
+		z = F.relu(self.dis1(z))
+		z = F.relu(self.dis2(z))
+		z = F.sigmoid(self.dis3(z))
+
+		return z
+
+	def forward(self, z):
+		return self.discriminate(z)
+
+	def dis_loss(self, z):
+		zReal = Variable(self.prior(z.size())).type_as(z)
+		pReal = self.discriminate(zReal)
+
+		zFake = z.detach()  #detach so grad only goes thru dis
+		pFake = self.discriminate(zFake)
+
+		ones = Variable(torch.Tensor(pReal.size()).fill_(1))
+		zeros = Variable(torch.Tensor(pFake.size()).fill_(0))
+
+		return 0.5 * torch.mean(bce(pReal, ones) + bce(pFake, zeros))
+
+	def gen_loss(self, z):
+		# n.b. z is not detached so it will update the models it has passed thru
+		pFake = self.discriminate(z)
+		ones = Variable(torch.Tensor(pFake.size()).fill_(1))
+		return torch.mean(bce(pFake, ones))
+
+
+
 
 
 

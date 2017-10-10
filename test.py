@@ -1,7 +1,9 @@
 import torch
 from torch.autograd import Variable
 
-from models import DAE
+from models import DAE, DIS_Z
+
+import math
 
 def test_DAE():
 	print 'testing DAE module'
@@ -24,4 +26,28 @@ def test_DAE():
 	assert z_sample.size() == (BATCH_SIZE, NZ)
 
 
+def test_DIS_Z():
+	print 'testing DIS_Z module'
+	NZ = 100
+	BATCH_SIZE = 5
+
+	z = Variable(torch.randn(BATCH_SIZE, NZ))
+	dis = DIS_Z(nz=NZ)
+
+	pReal = dis.discriminate(z)
+	pReal_ = dis.forward(z)
+	lossD = dis.dis_loss(z)
+	lossG = dis.gen_loss(z)
+
+	assert pReal.size() == (BATCH_SIZE, 1)
+	assert pReal_.size() == (BATCH_SIZE, 1)
+	assert not math.isnan(lossD.data[0])
+	assert not math.isnan(lossG.data[0])
+
+
+
 test_DAE()
+test_DIS_Z()
+
+
+
