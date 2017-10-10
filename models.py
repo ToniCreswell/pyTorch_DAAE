@@ -5,6 +5,8 @@ from torch.nn.functional import binary_cross_entropy as bce
 from torch.autograd import Variable
 from torch.nn.utils import clip_grad_norm
 
+from torchvision.utils import make_grid, save_image
+
 import os
 from os.path import join
 
@@ -91,6 +93,18 @@ class DAE(nn.Module):
 	def load_params(self, exDir):
 		print 'loading params...'
 		self.load_state_dict(torch.load(join(exDir, 'dae_params')))
+
+
+	def sample_x(self, M, exDir, z=None):
+		if z == None:
+			z = sample_z(noSamples=25)
+
+		x_i = self.decode(z)
+		save_image(x_0.data[0], join(exDir, 'samples0.png'))
+		for i in range(M):
+			x_i = self.forward(x_i)
+			save_image(x_i.data[0], join(exDir, 'samples'+str(i)+'.png'))
+
 
 
 
