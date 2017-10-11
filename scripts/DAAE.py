@@ -30,6 +30,8 @@ def get_args():
 
 if __name__=='__main__':
 
+	opts = get_args()
+
 	#Create a folder for this experiment
 	exDir = make_new_folder(opts.outDir)
 	print 'Outputs will be saved to:',exDir
