@@ -7,6 +7,7 @@ from dataload import CELEBA
 from models import DAE, DIS_Z
 
 from torchvision.utils import make_grid, save_image
+from torchvision import transforms, datasets
 
 import argparse
 
