@@ -102,7 +102,7 @@ if __name__=='__main__':
 			losses['dis'].append(disLoss.data[0])
 
 			if i%100 == 0:
-				print 'enc: %0.5f, rec: %0.5f, dis: %0.5f' % (encLoss.data[0], recLoss.data[0], dissLoss.data[0])
+				print 'enc: %0.5f, rec: %0.5f, dis: %0.5f' % (encLoss.data[0], recLoss.data[0], disLoss.data[0])
 
 		#### Test
 		dae.eval()
