@@ -2,7 +2,7 @@
 import sys
 sys.path.append('../')
 
-from function import prep_data
+from function import prep_data, make_new_folder, plot_losses
 from dataload import CELEBA 
 from models import DAE, DIS_Z
 
