@@ -8,6 +8,7 @@ from models import DAE, DIS_Z
 
 from torchvision.utils import make_grid, save_image
 
+import argparse
 
 def get_args():
 	parser = argparse.ArgumentParser()
