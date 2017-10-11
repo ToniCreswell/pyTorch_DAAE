@@ -130,8 +130,8 @@ if __name__=='__main__':
 		dis.save_params(exDir)
 
 		#Save images of original and rec
-		save_image(xTest.data[0], join(exDir, 'original.png'))
-		save_image(recTest.data[0], join(exDir, 'rec.png'))
+		save_image(xTest.data, join(exDir, 'original.png'))
+		save_image(recTest.data, join(exDir, 'rec.png'))
 
 		#Save samples
 		sampleDir = join(exDir,'epoch_'+str(e))
