@@ -13,7 +13,7 @@ import argparse
 
 def get_args():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--root', default='/data/datasets/LabelSwap', type=str)
+	parser.add_argument('--root', default='/data', type=str)
 	parser.add_argument('--batchSize', default=64, type=int)
 	parser.add_argument('--maxEpochs', default=10, type=int)
 	parser.add_argument('--nz', default=100, type=int)
