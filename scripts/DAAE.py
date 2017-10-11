@@ -121,7 +121,7 @@ if __name__=='__main__':
 
 		#Save samples
 		sampleDir = os.mkdir(join(exDir,'epoch_'+str(i)))
-		dae.sample_x(M=opts.M, sampleDir)
+		dae.sample_x(opts.M, sampleDir)
 
 
 
