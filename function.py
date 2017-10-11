@@ -1,7 +1,5 @@
 from torch.autograd import Variable
 
-from torchvision.utils import make_grid, save_image
-
 import os
 from os.path import join
 
@@ -42,6 +40,15 @@ def plot_losses(losses, exDir, epochs=1, title='loss'):
 	plt.legend()
 	plt.title(title)
 	fig1.savefig(join(exDir, title+'_plt.png'))
+
+def save_input_args(exDir, opts):
+	#save the input args to 
+	f = open(join(exDir,'opts.txt'),'w')
+	saveOpts =''.join(''.join(str(opts).split('(')[1:])\
+		.split(')')[:-1])\
+		.replace(',','\n')
+	f.write(saveOpts)
+	f.close()
 
 
 
