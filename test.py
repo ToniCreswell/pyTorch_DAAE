@@ -1,9 +1,14 @@
 import torch
 from torch.autograd import Variable
 
+from torchvision import transforms, datasets
+
 from models import DAE, DIS_Z
+from dataload import CELEBA
 
 import math
+
+ROOT = '/data'
 
 def test_DAE():
 	print 'testing DAE module'
@@ -44,10 +49,21 @@ def test_DIS_Z():
 	assert not math.isnan(lossD.data[0])
 	assert not math.isnan(lossG.data[0])
 
+def test_load_celebA():
+	print 'testing data loader'
+	BATCH_SIZE = 5
+	trainDataset = CELEBA(root=ROOT, train=True, transform=transforms.ToTensor())
+	trainLoader = torch.utils.data.DataLoader(trainDataset, batch_size=BATCH_SIZE, shuffle=True)
+
+	(x,y) = iter(trainLoader).next()
+	
+	assert x.size() == (5, 3, 64, 64)
+	assert y.size() == (5, 1)
 
 
 test_DAE()
 test_DIS_Z()
+test_load_celebA()
 
 
 
