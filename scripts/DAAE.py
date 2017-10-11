@@ -88,11 +88,11 @@ if __name__=='__main__':
 			daeLoss = recLoss + opts.alpha * encLoss
 
 			#do updates
-			optimDIS.zero_grads()
+			optimDIS.zero_grad()
 			disLoss.backward()
 			optimDIS.step()
 
-			optimDAE.zero_grads()
+			optimDAE.zero_grad()
 			daeLoss.backward()
 			optimDAE.step()
 
