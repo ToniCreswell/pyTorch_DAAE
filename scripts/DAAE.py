@@ -16,6 +16,9 @@ import argparse
 
 from time import time
 
+import os
+from os.path import join
+
 def get_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--root', default='/data', type=str)
@@ -131,7 +134,9 @@ if __name__=='__main__':
 		save_image(recTest.data[0], join(exDir, 'rec.png'))
 
 		#Save samples
-		sampleDir = os.mkdir(join(exDir,'epoch_'+str(i)))
+		sampleDir = join(exDir,'epoch_'+str(i))
+		os.mkdir(sampleDir)
+		print 'sample dir:', sampleDir
 		dae.sample_x(opts.M, sampleDir)
 
 

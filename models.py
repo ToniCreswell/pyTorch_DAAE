@@ -95,10 +95,10 @@ class DAE(nn.Module):
 
 	def sample_x(self, M, exDir, z=None):
 		if z == None:
-			z = sample_z(noSamples=25)
+			z = self.sample_z(noSamples=25)
 
 		x_i = self.decode(z)
-		save_image(x_0.data[0], join(exDir, 'samples0.png'))
+		save_image(x_i.data[0], join(exDir, 'samples0.png'))
 		for i in range(M):
 			z_i, x_i = self.forward(x_i)
 			save_image(x_i.data[0], join(exDir, 'samples'+str(i)+'.png'))
