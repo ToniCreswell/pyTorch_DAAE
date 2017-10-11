@@ -59,7 +59,7 @@ def test_load_celebA():
 	
 	assert x.size() == (5, 3, 64, 64)
 	print y.size()
-	assert y.size() == (5)
+	assert y.size() == (5, )
 
 
 test_DAE()
