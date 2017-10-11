@@ -58,7 +58,7 @@ def test_load_celebA():
 	(x,y) = iter(trainLoader).next()
 	
 	assert x.size() == (5, 3, 64, 64)
-	assert y.size() == (5, 1)
+	assert y.size() == 5
 
 
 test_DAE()
