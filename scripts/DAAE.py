@@ -109,7 +109,7 @@ if __name__=='__main__':
 		#Plot losses
 		losses['test rec'].append(recLossTest.mean().data[0])
 		if e > 0: #only one point for test rec otherwise
-			plot_losses(losses, exDir, epochs=e+1):
+			plot_losses(losses, exDir, epochs=e+1)
 
 		#save parameters
 		dae.save_params(exDir)
