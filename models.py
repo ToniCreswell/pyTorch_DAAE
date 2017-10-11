@@ -75,13 +75,13 @@ class DAE(nn.Module):
 		# the outputs needed for training
 		x_corr = self.corrupt(x)
 		z = self.encode(x_corr)
-		return self.decode(z)
+		return z, self.decode(z)
 
 	def rec_loss(self, rec_x, x, loss='BCE'):
 		if loss is 'BCE':
 			return bce(rec_x, x, size_average=True)  #not averaged over mini-batch if size_average=FALSE and is averaged if =True 
 		elif loss is 'MSE':
-			return F.mse_loss(rec_x,x, size_average=True)
+			return F.mse_loss(rec_x, x, size_average=True)
 		else:
 			print 'unknown loss:'+loss
 
@@ -89,11 +89,9 @@ class DAE(nn.Module):
 		print 'saving params...'
 		torch.save(self.state_dict(), join(exDir, 'dae_params'))
 
-
 	def load_params(self, exDir):
 		print 'loading params...'
 		self.load_state_dict(torch.load(join(exDir, 'dae_params')))
-
 
 	def sample_x(self, M, exDir, z=None):
 		if z == None:
@@ -102,11 +100,8 @@ class DAE(nn.Module):
 		x_i = self.decode(z)
 		save_image(x_0.data[0], join(exDir, 'samples0.png'))
 		for i in range(M):
-			x_i = self.forward(x_i)
+			z_i, x_i = self.forward(x_i)
 			save_image(x_i.data[0], join(exDir, 'samples'+str(i)+'.png'))
-
-
-
 
 class DIS_Z(nn.Module):
 
@@ -141,8 +136,8 @@ class DIS_Z(nn.Module):
 		zFake = z.detach()  #detach so grad only goes thru dis
 		pFake = self.discriminate(zFake)
 
-		ones = Variable(torch.Tensor(pReal.size()).fill_(1))
-		zeros = Variable(torch.Tensor(pFake.size()).fill_(0))
+		ones = Variable(torch.Tensor(pReal.size()).fill_(1)).type_as(pReal)
+		zeros = Variable(torch.Tensor(pFake.size()).fill_(0)).type_as(pFake)
 
 		return 0.5 * torch.mean(bce(pReal, ones) + bce(pFake, zeros))
 
@@ -151,6 +146,20 @@ class DIS_Z(nn.Module):
 		pFake = self.discriminate(z)
 		ones = Variable(torch.Tensor(pFake.size()).fill_(1))
 		return torch.mean(bce(pFake, ones))
+
+	def save_params(self, exDir):
+		print 'saving params...'
+		torch.save(self.state_dict(), join(exDir, 'dis_z_params'))
+
+	def load_params(self, exDir):
+		print 'loading params...'
+		self.load_state_dict(torch.load(join(exDir, 'dis_z_params')))
+
+	def plot_encz(self, exDir):  #TODO
+		'''
+		plot the encoded z samples
+		'''
+		print 'TO DO'
 
 
 

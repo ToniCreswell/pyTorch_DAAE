@@ -22,14 +22,14 @@ def test_DAE():
 
 	x_corr = dae.corrupt(x)
 	z_enc = dae.encode(x)
-	x_rec = dae.forward(x)
+	z_enc_, x_rec = dae.forward(x)
 	z_sample = dae.sample_z(BATCH_SIZE)
 
 	assert x_corr.size() == (BATCH_SIZE, 3, IM_SIZE, IM_SIZE)
 	assert z_enc.size() == (BATCH_SIZE, NZ)
+	assert z_enc_.size() == (BATCH_SIZE, NZ)
 	assert x_rec.size() == (BATCH_SIZE, 3, IM_SIZE, IM_SIZE)
 	assert z_sample.size() == (BATCH_SIZE, NZ)
-
 
 def test_DIS_Z():
 	print 'testing DIS_Z module'
@@ -58,13 +58,12 @@ def test_load_celebA():
 	(x,y) = iter(trainLoader).next()
 	
 	assert x.size() == (5, 3, 64, 64)
-	print y.size()
 	assert y.size() == (5, )
 
 
 test_DAE()
 test_DIS_Z()
-test_load_celebA()
+# test_load_celebA()
 
 
 
