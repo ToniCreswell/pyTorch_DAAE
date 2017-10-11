@@ -79,9 +79,9 @@ class DAE(nn.Module):
 
 	def rec_loss(self, rec_x, x, loss='BCE'):
 		if loss == 'BCE':
-			return bce(rec_x, x, size_average=True)  #not averaged over mini-batch if size_average=FALSE and is averaged if =True 
+			return torch.mean(bce(rec_x, x, size_average=True))  #not averaged over mini-batch if size_average=FALSE and is averaged if =True 
 		elif loss == 'MSE':
-			return F.mse_loss(rec_x, x, size_average=True)
+			return torch.mean(F.mse_loss(rec_x, x, size_average=True))
 		else:
 			print 'unknown loss:'+loss
 

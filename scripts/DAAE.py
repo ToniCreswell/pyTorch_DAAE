@@ -97,12 +97,12 @@ if __name__=='__main__':
 			optimDAE.step()
 
 			# storing losses for plotting later
-			losses['enc'].append(encLoss.mean().data[0])
-			losses['rec'].append(recLoss.mean().data[0])
-			losses['dis'].append(disLoss.mean().data[0])
+			losses['enc'].append(encLoss.data[0])
+			losses['rec'].append(recLoss.data[0])
+			losses['dis'].append(disLoss.data[0])
 
 			if i%100 == 0:
-				print 'enc: %0.5f, rec: %0.5f, dis: %0.5f'
+				print 'enc: %0.5f, rec: %0.5f, dis: %0.5f' % (encLoss.data[0], recLoss.data[0], dissLoss.data[0])
 
 		#### Test
 		dae.eval()
