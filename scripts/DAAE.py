@@ -2,7 +2,7 @@
 import sys
 sys.path.append('../')
 
-from function import data_prep
+from function import prep_data
 from dataload import CELEBA 
 from models import DAE, DIS_Z
 
@@ -102,7 +102,7 @@ if __name__=='__main__':
 		dis.eval()
 
 		#get test outuputs and losses
-		xTest, yTest = prep_data(iter(testLoader).next())
+		xTest, yTest = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)
 		zTest, recTest = dae.forward(xTest)
 		recLossTest = dae.rec_loss(recTest, xTest)
 
