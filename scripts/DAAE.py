@@ -6,6 +6,8 @@ from function import prep_data, make_new_folder, plot_losses, save_input_args
 from dataload import CELEBA 
 from models import DAE, DIS_Z
 
+import torch
+
 from torchvision.utils import make_grid, save_image
 from torchvision import transforms, datasets
 
