@@ -48,7 +48,7 @@ if __name__=='__main__':
 	print 'Data loaders ready.'
 
 	#Create model
-	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma) #sigma=level of corruption
+	dae = DAE(nz=opts.nz, imSize=opts.fSize, fSize=opts.fSize, sigma=opts.sigma) #sigma=level of corruption
 	dis = DIS_Z(nz=opts.nz)
 
 	if dae.useCUDA:
@@ -101,6 +101,7 @@ if __name__=='__main__':
 
 		#### Test
 		dae.eval()
+		dis.eval()
 
 		#get test outuputs and losses
 		xTest, yTest = prep_data(iter(testLoader).next())
@@ -119,6 +120,10 @@ if __name__=='__main__':
 		#Save images of original and rec
 		save_image(xTest.data[0], join(exDir, 'original.png'))
 		save_image(recTest.data[0], join(exDir, 'rec.png'))
+
+		#Save samples
+		sampleDir = os.mkdir(join(exDir,'epoch_'+str(i)))
+		dae.sample_x(M=opts.M, sampleDir)
 
 
 
