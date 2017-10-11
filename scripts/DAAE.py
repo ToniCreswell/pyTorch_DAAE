@@ -14,6 +14,8 @@ from torchvision import transforms, datasets
 
 import argparse
 
+from time import time
+
 def get_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--root', default='/data', type=str)
@@ -72,6 +74,8 @@ if __name__=='__main__':
 
 		for i, data in enumerate(trainLoader):
 
+			T = time()
+
 			dae.train()
 			dis.train()
 
@@ -102,7 +106,7 @@ if __name__=='__main__':
 			losses['dis'].append(disLoss.data[0])
 
 			if i%100 == 0:
-				print 'enc: %0.5f, rec: %0.5f, dis: %0.5f' % (encLoss.data[0], recLoss.data[0], disLoss.data[0])
+				print '[%d, %d] enc: %0.5f, rec: %0.5f, dis: %0.5f, time: %0.3f' % (e, i, encLoss.data[0], recLoss.data[0], disLoss.data[0], time() - T)
 
 		#### Test
 		dae.eval()
