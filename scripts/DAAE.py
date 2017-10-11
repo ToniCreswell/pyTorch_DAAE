@@ -55,7 +55,7 @@ if __name__=='__main__':
 	print 'Data loaders ready.'
 
 	#Create model
-	dae = DAE(nz=opts.nz, imSize=opts.imSize, fSize=opts.fSize, sigma=opts.sigma) #sigma=level of corruption
+	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma) #sigma=level of corruption
 	dis = DIS_Z(nz=opts.nz)
 
 	if dae.useCUDA:
