@@ -85,3 +85,6 @@ class CELEBA(data.Dataset):
         assert os.path.isdir(inDir)
         assert os.path.exists(join(inDir, 'xTrain.npy'))
         assert os.path.exists(join(inDir, 'yTrain.npy'))
+
+
+        
