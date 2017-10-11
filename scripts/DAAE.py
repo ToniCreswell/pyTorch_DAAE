@@ -2,8 +2,6 @@
 import sys
 sys.path.append('../')
 
-from 
-
 from function import data_prep
 from dataload import CELEBA 
 from models import DAE, DIS_Z
