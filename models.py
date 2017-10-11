@@ -78,9 +78,9 @@ class DAE(nn.Module):
 		return z, self.decode(z)
 
 	def rec_loss(self, rec_x, x, loss='BCE'):
-		if loss is 'BCE':
+		if loss == 'BCE':
 			return bce(rec_x, x, size_average=True)  #not averaged over mini-batch if size_average=FALSE and is averaged if =True 
-		elif loss is 'MSE':
+		elif loss == 'MSE':
 			return F.mse_loss(rec_x, x, size_average=True)
 		else:
 			print 'unknown loss:'+loss
@@ -144,7 +144,7 @@ class DIS_Z(nn.Module):
 	def gen_loss(self, z):
 		# n.b. z is not detached so it will update the models it has passed thru
 		pFake = self.discriminate(z)
-		ones = Variable(torch.Tensor(pFake.size()).fill_(1))
+		ones = Variable(torch.Tensor(pFake.size()).fill_(1)).type_as(pFake)
 		return torch.mean(bce(pFake, ones))
 
 	def save_params(self, exDir):
