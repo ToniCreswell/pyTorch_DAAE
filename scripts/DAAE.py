@@ -63,7 +63,7 @@ if __name__=='__main__':
 	#Start training
 	for e in range(opts.maxEpochs):
 
-		for i, data = enumerate(trainLoader):
+		for i, data in enumerate(trainLoader):
 
 			dae.train()
 			dis.train()
