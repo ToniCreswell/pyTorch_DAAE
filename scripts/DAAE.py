@@ -33,9 +33,9 @@ def get_args():
 	parser.add_argument('--sigma', default=0.1, type=float)  # noise level
 	parser.add_argument('--M', default=5, type=int)  #number of sampling iterations
 	parser.add_argument('--loss', default='BCE', type=str) #'BCE' or 'MSE' currently supported
-	parser.add_argument('--loadDAE', store_action=True)
+	parser.add_argument('--loadDAE', action='store_true')
 	parser.add_argument('--load_DAE_from', default=None, type=str)
-	parser.add_argument('--evalMode', store_action=True)
+	parser.add_argument('--evalMode', action='store_true')
 
 	return parser.parse_args()
 
