@@ -87,7 +87,7 @@ def eval_mode(dae, exDir, M, testLoader):
 
 	fig1 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max()
-	plt.imshow(robustnessMap, extent=[-maxShift, maxShift, -maxShift, maxShift])
+	plt.imshow(robustnessMap.data, extent=[-maxShift, maxShift, -maxShift, maxShift])
 	plt.colorbar()
 	plt.savefig(join(exDir, 'shiftRobustness.png'))
 
