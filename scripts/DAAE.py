@@ -59,15 +59,6 @@ def eval_mode(dae, exDir, M, testLoader):
 	f.write('mean reconstruction error: %0.5f' % (meanRecError))
 	f.close()
 
-	#sampling
-	print 'sampling...'
-	sampleDir = join(exDir,'FinalSamples')
-	try:
-		os.mkdir(sampleDir)
-	except OSError: print 'file alread exists'
-	for m in range(M):
-		dae.sample_x(opts.M, sampleDir)
-
 	#eval samples ##TODO
 
 	#representation robustness (shift)
@@ -95,6 +86,15 @@ def eval_mode(dae, exDir, M, testLoader):
 	plt.savefig(join(exDir, 'shiftRobustness.png'))
 
 	#classification
+
+	#sampling
+	print 'sampling...'
+	sampleDir = join(exDir,'FinalSamples')
+	try:
+		os.mkdir(sampleDir)
+	except OSError: print 'file alread exists'
+	for m in range(M):
+		dae.sample_x(opts.M, sampleDir)
 
 
 
