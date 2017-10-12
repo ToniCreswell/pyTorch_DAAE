@@ -57,7 +57,10 @@ def eval_mode(dae, exDir, M, testLoader):
 	#sampling
 	for m in range(M):
 		sampleDir = join(exDir,'FinalSamples')
-		os.mkdir(sampleDir)
+		try:
+			os.mkdir(sampleDir)
+		except OSError: print 'file alread exists'
+
 		dae.sample_x(opts.M, sampleDir)
 
 	#eval samples ##TODO
