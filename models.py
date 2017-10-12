@@ -102,7 +102,7 @@ class DAE(nn.Module):
 		for i in range(M):
 			x_i = self.corrupt(x_i)
 			z_i, x_i = self.forward(x_i)
-			save_image(x_i.data, join(exDir, 'samples'+str(i)+'.png'))
+			save_image(x_i.data, join(exDir, 'samples'+str(i+1)+'.png'))
 
 class DIS_Z(nn.Module):
 
