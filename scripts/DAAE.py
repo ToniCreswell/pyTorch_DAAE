@@ -110,7 +110,7 @@ if __name__=='__main__':
 
 	if opts.loadDAE:
 		dae.load_params(opts.load_DAE_from)
-	if evalMode:
+	if opts.evalMode:
 		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader)
 		opts.maxEpochs = 0
 
