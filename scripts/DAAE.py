@@ -122,11 +122,11 @@ if __name__=='__main__':
 	if opts.evalMode:
 		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader)
 		opts.maxEpochs = 0
-
-	#Create a folder for this experiment
-	exDir = make_new_folder(opts.outDir)
-	print 'Outputs will be saved to:',exDir
-	save_input_args(exDir, opts)  #save training opts
+	else:
+		#Create a folder for this experiment
+		exDir = make_new_folder(opts.outDir)
+		print 'Outputs will be saved to:',exDir
+		save_input_args(exDir, opts)  #save training opts
 
 	#Create optimizers
 	optimDAE = optim.Adam(dae.parameters(), lr = opts.lr)
