@@ -55,12 +55,11 @@ def eval_mode(dae, exDir, M, testLoader):
 	f.write('mean reconstruction error: %0.5f' % (meanRecError))
 
 	#sampling
+	sampleDir = join(exDir,'FinalSamples')
+	try:
+		os.mkdir(sampleDir)
+	except OSError: print 'file alread exists'
 	for m in range(M):
-		sampleDir = join(exDir,'FinalSamples')
-		try:
-			os.mkdir(sampleDir)
-		except OSError: print 'file alread exists'
-
 		dae.sample_x(opts.M, sampleDir)
 
 	#eval samples ##TODO
