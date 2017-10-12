@@ -203,8 +203,8 @@ if __name__=='__main__':
 		print 'sample dir:', sampleDir
 		dae.sample_x(opts.M, sampleDir)
 
-
-	eval_mode(dae=dae, exDir=opts.exDir, M=20, testLoader=testLoader)
+	if not opts.evalMode:
+		eval_mode(dae=dae, exDir=opts.exDir, M=20, testLoader=testLoader)
 
 
 
