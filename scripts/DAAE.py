@@ -82,13 +82,12 @@ def eval_mode(dae, exDir, M, testLoader):
 		for i, dy in enumerate(axis):
 			print [dx, dy]
 			xShift = shift_x(x, dy, dx)
-			encDxDy = dae.encode(x)
+			encDxDy = dae.encode(xShift)
 			# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
-			diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data for k in range(encDxDy.size(0))]
+			diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
 			robustnessMap[i,j] = np.mean(diff)
 			# robustnessMap[i,j] = np.mean(diff)
 
-	print robustnessMap
 	fig1 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
 	plt.imshow(robustnessMap.numpy().reshape(len(axis), len(axis)), extent=[-maxShift, maxShift, -maxShift, maxShift])
