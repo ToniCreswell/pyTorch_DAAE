@@ -49,7 +49,7 @@ def eval_mode(dae, exDir, M, testLoader):
 		x, y = prep_data(data, useCUDA=dae.useCUDA)
 		zTest, recTest = dae.forward(x)
 		recError.append(dae.rec_loss(recTest, x).data[0])
-	meanRecError = torch.mean(recError)
+	meanRecError = np.mean(recError)
 	f.write('mean reconstruction error: %0.5f' % (meanRecError))
 
 	#sampling
@@ -69,7 +69,7 @@ def eval_mode(dae, exDir, M, testLoader):
 		for dy in range(-maxShift, maxShift):
 			xShift = shift_x(x)
 			encDxDy = dae.encode(x)
-			diff = torch.Tensor([torch.dot(encDxDy[i], enc00[i]) for i in range(encDxDy.size(0))])
+			diff = [torch.dot(encDxDy[i], enc00[i]) for i in range(encDxDy.size(0))]
 			robustnessMap[dx,dy] = torch.mean(diff)
 
 	fig1 = plt.figure()
