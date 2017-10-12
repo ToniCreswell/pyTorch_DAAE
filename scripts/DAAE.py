@@ -73,7 +73,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	#representation robustness (shift)
 	print 'performing robustness plot...'
 	maxShift = x.size(2)//2
-	step = 2
+	step = 4
 	axis = range(-maxShift, maxShift, step)
 	robustnessMap = torch.Tensor(maxShift, maxShift).fill_(0)
 	x, y = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)  #take a batch of samples
@@ -86,8 +86,8 @@ def eval_mode(dae, exDir, M, testLoader):
 			robustnessMap[dx,dy] = np.mean(diff)
 
 	fig1 = plt.figure()
-	print robustnessMap.min(), robustnessMap.max()
-	plt.imshow(robustnessMap.data, extent=[-maxShift, maxShift, -maxShift, maxShift])
+	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
+	plt.imshow(robustnessMap.numpy().reshape(len(axis), len(axis)), extent=[-maxShift, maxShift, -maxShift, maxShift])
 	plt.colorbar()
 	plt.savefig(join(exDir, 'shiftRobustness.png'))
 
