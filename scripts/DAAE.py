@@ -204,6 +204,7 @@ if __name__=='__main__':
 		dae.sample_x(opts.M, sampleDir)
 
 
+	eval_mode(dae=dae, exDir=opts.exDir, M=20, testLoader=testLoader)
 
 
 
