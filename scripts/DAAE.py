@@ -75,15 +75,15 @@ def eval_mode(dae, exDir, M, testLoader):
 	maxShift = x.size(2)//2
 	step = 4
 	axis = range(-maxShift, maxShift, step)
-	robustnessMap = torch.Tensor(maxShift, maxShift).fill_(0)
+	robustnessMap = torch.Tensor(maxShift*2//step, maxShift*2//step).fill_(0)
 	x, y = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)  #take a batch of samples
 	enc00 = dae.encode(x)
-	for dx in axis:
-		for dy in axis:
+	for j, dx in enumerate(axis):
+		for i, dy in enumerte(axis):
 			xShift = shift_x(x, dy, dx)
 			encDxDy = dae.encode(x)
 			diff = [(torch.dot(encDxDy[i], enc00[i])/ (torch.norm(encDxDy[i])*torch.norm(enc00[i]))).data[0] for i in range(encDxDy.size(0))]
-			robustnessMap[dx,dy] = np.mean(diff)
+			robustnessMap[i,j] = np.mean(diff)
 
 	fig1 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
