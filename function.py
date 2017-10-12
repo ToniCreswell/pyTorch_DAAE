@@ -1,3 +1,4 @@
+import torch
 from torch.autograd import Variable
 
 import os
@@ -53,5 +54,10 @@ def save_input_args(exDir, opts):
 	f.close()
 
 
+def shift_x(x, dx, dy):
+	xShift = Variable(torch.Tensor(x.size())).type_as(x)
+	non = lambda s: s if s<0 else None
+	mom = lambda s: max(0,s)
 
-
+	xShift[mom(dy):non(dy), mom(dx):non(dx)] = x[mom(-dy):non(-dy), mom(-dx):non(-dx)]
+	return xShift

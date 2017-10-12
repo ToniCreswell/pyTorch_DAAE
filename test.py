@@ -5,8 +5,10 @@ from torchvision import transforms, datasets
 
 from models import DAE, DIS_Z
 from dataload import CELEBA
+from function import shift_x
 
 import math
+import numpy as np
 
 ROOT = '/data'
 
@@ -60,9 +62,25 @@ def test_load_celebA():
 	assert x.size() == (5, 3, 64, 64)
 	assert y.size() == (5, )
 
+def test_shift_x():
+	print 'testing shift x'
+	BATCH_SIZE = 5
+	IM_SIZE = 64
+
+	x = Variable(torch.Tensor(5,5).fill_(1))  #random input
+
+	DX, DY = 1, 1
+	GT=np.zeros((5,5))
+	GT[1:,1:]=1
+	print GT
+	xShift = shift_x(x, DX, DY)
+	print xShift.data
+	assert (xShift.data - torch.Tensor(GT)).abs().mean() < 1e-3
+
 
 test_DAE()
 test_DIS_Z()
+test_shift_x()
 # test_load_celebA()
 
 
