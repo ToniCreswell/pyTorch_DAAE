@@ -59,5 +59,13 @@ def shift_x(x, dx, dy):
 	non = lambda s: s if s<0 else None
 	mom = lambda s: max(0,s)
 
-	xShift[mom(dy):non(dy), mom(dx):non(dx)] = x[mom(-dy):non(-dy), mom(-dx):non(-dx)]
+	xShift[:, :, mom(dy):non(dy), mom(dx):non(dx)] = x[:,:, mom(-dy):non(-dy), mom(-dx):non(-dx)]
 	return xShift
+
+def random_occlusion(x, size):  #TODO
+	'''sqaure occlusion or WGN'''
+
+	assert (size,size) <= x.size()
+
+
+

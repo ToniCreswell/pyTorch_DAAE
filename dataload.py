@@ -87,4 +87,3 @@ class CELEBA(data.Dataset):
         assert os.path.exists(join(inDir, 'yTrain.npy'))
 
 
-        
