@@ -53,6 +53,7 @@ def eval_mode(dae, exDir, M, testLoader):
 		recError.append(dae.rec_loss(recTest, x).data[0])
 	meanRecError = np.mean(recError)
 	f.write('mean reconstruction error: %0.5f' % (meanRecError))
+	f.close()
 
 	#sampling
 	sampleDir = join(exDir,'FinalSamples')
@@ -65,6 +66,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	#eval samples ##TODO
 
 	#representation robustness (shift)
+	print 'robustness plot'
 	maxShift = x.size(2)//2
 	step = 2
 	axis = range(-maxShift, maxShift, step)
@@ -75,8 +77,8 @@ def eval_mode(dae, exDir, M, testLoader):
 		for dy in axis:
 			xShift = shift_x(x, dy, dx)
 			encDxDy = dae.encode(x)
-			diff = [torch.dot(encDxDy[i], enc00[i]) for i in range(encDxDy.size(0))]
-			robustnessMap[dx,dy] = torch.mean(diff)
+			diff = [torch.dot(encDxDy[i], enc00[i]).data for i in range(encDxDy.size(0))]
+			robustnessMap[dx,dy] = np.mean(diff)
 
 	fig1 = plt.figure()
 	plt.imshow(robustnessMap, extent=[-maxShift, maxShift, -maxShift, maxShift])
