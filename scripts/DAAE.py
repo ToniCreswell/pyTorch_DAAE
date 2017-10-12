@@ -82,10 +82,11 @@ def eval_mode(dae, exDir, M, testLoader):
 		for dy in axis:
 			xShift = shift_x(x, dy, dx)
 			encDxDy = dae.encode(x)
-			diff = [torch.dot(encDxDy[i], enc00[i]).data[0] for i in range(encDxDy.size(0))]
+			diff = [(torch.dot(encDxDy[i], enc00[i])/ (torch.norm(encDxDy[i])*torch.norm(enc00[i]))).data[0] for i in range(encDxDy.size(0))]
 			robustnessMap[dx,dy] = np.mean(diff)
 
 	fig1 = plt.figure()
+	print robustnessMap.min(), robustnessMap.max()
 	plt.imshow(robustnessMap, extent=[-maxShift, maxShift, -maxShift, maxShift])
 	plt.colorbar()
 	plt.savefig(join(exDir, 'shiftRobustness.png'))
