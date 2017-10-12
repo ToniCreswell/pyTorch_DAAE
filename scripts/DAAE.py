@@ -21,6 +21,9 @@ from os.path import join
 
 import numpy as np
 
+import matplotlib
+from matplotlib import pyplot as plt
+
 def get_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--root', default='/data', type=str)
