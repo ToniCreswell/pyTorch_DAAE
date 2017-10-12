@@ -50,7 +50,7 @@ def eval_mode(dae, exDir, M, testLoader):
 		zTest, recTest = dae.forward(x)
 		recError.append(dae.rec_loss(recTest, x).data[0])
 	meanRecError = torch.mean(recError)
-	f.write('mean reconstruction error: %0.5f', % (meanRecError))
+	f.write('mean reconstruction error: %0.5f' % (meanRecError))
 
 	#sampling
 	for m in range(M):
