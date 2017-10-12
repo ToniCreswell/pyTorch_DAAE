@@ -80,7 +80,6 @@ def eval_mode(dae, exDir, M, testLoader):
 	enc00 = dae.encode(x)
 	for j, dx in enumerate(axis):
 		for i, dy in enumerate(axis):
-			print [dx, dy]
 			xShift = shift_x(x, dy, dx)
 			encDxDy = dae.encode(xShift)
 			# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
