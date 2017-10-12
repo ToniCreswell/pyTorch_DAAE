@@ -47,6 +47,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	dae.eval()
 	#reconstruction error and t-SNE
 	recError = []
+	print 'calculating reconstruction error...'
 	for i, data in enumerate(testLoader):
 		x, y = prep_data(data, useCUDA=dae.useCUDA)
 		zTest, recTest = dae.forward(x)
@@ -56,6 +57,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	f.close()
 
 	#sampling
+	print 'sampling...'
 	sampleDir = join(exDir,'FinalSamples')
 	try:
 		os.mkdir(sampleDir)
@@ -66,7 +68,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	#eval samples ##TODO
 
 	#representation robustness (shift)
-	print 'robustness plot'
+	print 'performing robustness plot...'
 	maxShift = x.size(2)//2
 	step = 2
 	axis = range(-maxShift, maxShift, step)
@@ -77,7 +79,7 @@ def eval_mode(dae, exDir, M, testLoader):
 		for dy in axis:
 			xShift = shift_x(x, dy, dx)
 			encDxDy = dae.encode(x)
-			diff = [torch.dot(encDxDy[i], enc00[i]).data for i in range(encDxDy.size(0))]
+			diff = [torch.dot(encDxDy[i], enc00[i]).data[0] for i in range(encDxDy.size(0))]
 			robustnessMap[dx,dy] = np.mean(diff)
 
 	fig1 = plt.figure()
