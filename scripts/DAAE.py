@@ -79,7 +79,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	x, y = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)  #take a batch of samples
 	enc00 = dae.encode(x)
 	for j, dx in enumerate(axis):
-		for i, dy in enumerte(axis):
+		for i, dy in enumerate(axis):
 			xShift = shift_x(x, dy, dx)
 			encDxDy = dae.encode(x)
 			diff = [(torch.dot(encDxDy[i], enc00[i])/ (torch.norm(encDxDy[i])*torch.norm(enc00[i]))).data[0] for i in range(encDxDy.size(0))]
