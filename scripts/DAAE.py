@@ -19,6 +19,8 @@ from time import time
 import os
 from os.path import join
 
+import numpy as np
+
 def get_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--root', default='/data', type=str)
