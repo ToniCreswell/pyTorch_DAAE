@@ -69,7 +69,7 @@ def eval_mode(dae, exDir, M, testLoader):
 		for dy in range(-maxShift, maxShift):
 			xShift = shift_x(x)
 			encDxDy = dae.encode(x)
-			diff = [torch.dot(encDxDy[i], enc00[i]) for i in range(encDxDy.size(0))]
+			diff = torch.Tensor([torch.dot(encDxDy[i], enc00[i]) for i in range(encDxDy.size(0))])
 			robustnessMap[dx,dy] = torch.mean(diff)
 
 	fig1 = plt.figure()
