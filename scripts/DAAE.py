@@ -66,11 +66,13 @@ def eval_mode(dae, exDir, M, testLoader):
 
 	#representation robustness (shift)
 	maxShift = x.size(2)//2
+	step = 2
+	axis = range(-maxShift, maxShift, step)
 	robustnessMap = torch.Tensor(maxShift, maxShift).fill_(0)
 	x, y = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)  #take a batch of samples
 	enc00 = dae.encode(x)
-	for dx in range(-maxShift, maxShift):
-		for dy in range(-maxShift, maxShift):
+	for dx in axis:
+		for dy in axis:
 			xShift = shift_x(x)
 			encDxDy = dae.encode(x)
 			diff = [torch.dot(encDxDy[i], enc00[i]) for i in range(encDxDy.size(0))]
