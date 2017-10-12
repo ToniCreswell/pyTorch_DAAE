@@ -82,7 +82,7 @@ def eval_mode(dae, exDir, M, testLoader):
 		for i, dy in enumerate(axis):
 			xShift = shift_x(x, dy, dx)
 			encDxDy = dae.encode(x)
-			diff = [(torch.dot(encDxDy[i], enc00[i])/ (torch.norm(encDxDy[i])*torch.norm(enc00[i]))).data[0] for i in range(encDxDy.size(0))]
+			diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
 			robustnessMap[i,j] = np.mean(diff)
 
 	fig1 = plt.figure()
@@ -98,11 +98,6 @@ def eval_mode(dae, exDir, M, testLoader):
 if __name__=='__main__':
 
 	opts = get_args()
-
-	#Create a folder for this experiment
-	exDir = make_new_folder(opts.outDir)
-	print 'Outputs will be saved to:',exDir
-	save_input_args(exDir, opts)  #save training opts
 
 	#Load data
 	print 'Prepare data loaders...'
@@ -127,6 +122,11 @@ if __name__=='__main__':
 	if opts.evalMode:
 		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader)
 		opts.maxEpochs = 0
+
+	#Create a folder for this experiment
+	exDir = make_new_folder(opts.outDir)
+	print 'Outputs will be saved to:',exDir
+	save_input_args(exDir, opts)  #save training opts
 
 	#Create optimizers
 	optimDAE = optim.Adam(dae.parameters(), lr = opts.lr)
