@@ -2,7 +2,7 @@
 import sys
 sys.path.append('../')
 
-from function import prep_data, make_new_folder, plot_losses, save_input_args
+from function import prep_data, make_new_folder, plot_losses, save_input_args, shift_x
 from dataload import CELEBA 
 from models import DAE, DIS_Z
 
@@ -33,8 +33,49 @@ def get_args():
 	parser.add_argument('--sigma', default=0.1, type=float)  # noise level
 	parser.add_argument('--M', default=5, type=int)  #number of sampling iterations
 	parser.add_argument('--loss', default='BCE', type=str) #'BCE' or 'MSE' currently supported
+	parser.add_argument('--loadDAE', store_action=True)
+	parser.add_argument('--load_DAE_from', default=None, type=str)
+	parser.add_argument('--evalMode', store_action=True)
 
 	return parser.parse_args()
+
+
+def eval_mode(dae, exDir, M, testLoader):
+	f = open(join(exDir, 'outputs.txt'), 'w')
+	dae.eval()
+	#reconstruction error and t-SNE
+	recError = []
+	for i, data in enumerate(testLoader):
+		x, y = prep_data(data, useCUDA=dae.useCUDA)
+		zTest, recTest = dae.forward(x)
+		recError.append(dae.rec_loss(recTest, x).data[0])
+	meanRecError = torch.mean(recError)
+	f.write('mean reconstruction error: %0.5f', % (meanRecError))
+
+	#sampling
+	for m in range(M):
+		sampleDir = join(exDir,'FinalSamples')
+		os.mkdir(sampleDir)
+		dae.sample_x(opts.M, sampleDir)
+
+	#eval samples ##TODO
+
+	#representation robustness (shift)
+	maxShift = x.size(2)//2
+	robustnessMap = torch.Tensor(maxShift, maxShift).fill_(0)
+	x,y = prep_data(iter(testLoader).next())  #take a batch of samples
+	enc00 = dae.encode(x)
+	for dx in range(x.size(2)//2):
+		for dy in range(x.size(2)//2):
+			xShift = shift_x(x)
+			encDxDy = dae.encode(x)
+			diff = [torch.dot(encDxDy[i], enc00[i]) for i in range(encDxDy.size(0))]
+			maxShift[dx,dy] = torch.mean(diff)
+
+
+
+
+	#classification
 
 
 
@@ -64,6 +105,12 @@ if __name__=='__main__':
 	if dae.useCUDA:
 		dae.cuda()
 		dis.cuda()
+
+	if opts.loadDAE:
+		dae.load_params(opts.load_DAE_from)
+	if evalMode:
+		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader)
+		opts.maxEpochs = 0
 
 	#Create optimizers
 	optimDAE = optim.Adam(dae.parameters(), lr = opts.lr)
