@@ -41,6 +41,7 @@ def get_args():
 	parser.add_argument('--loadDAE', action='store_true')
 	parser.add_argument('--load_DAE_from', default=None, type=str)
 	parser.add_argument('--evalMode', action='store_true')
+	parser.add_argument('--comment', type=str)
 
 	return parser.parse_args()
 
