@@ -2,7 +2,7 @@
 import sys
 sys.path.append('../')
 
-from function import prep_data, make_new_folder, plot_losses, save_input_args, shift_x
+from function import prep_data, make_new_folder, plot_losses, save_input_args, shift_x, plot_norm_losses
 from dataload import CELEBA 
 from models import DAE, DIS_Z
 
@@ -188,6 +188,7 @@ if __name__=='__main__':
 		losses['test rec'].append(recLossTest.data[0])
 		if e > 0: #only one point for test rec otherwise
 			plot_losses(losses, exDir, epochs=e+1)
+			plot_norm_losses(losses, exDir)
 
 		#save parameters
 		dae.save_params(exDir)
