@@ -130,8 +130,8 @@ if __name__=='__main__':
 		save_input_args(exDir, opts)  #save training opts
 
 	#Create optimizers
-	optimDAE = optim.RMSProp(dae.parameters(), lr = opts.lr)
-	optimDIS = optim.RMSProp(dis.parameters(), lr = opts.lr)
+	optimDAE = optim.RMSprop(dae.parameters(), lr = opts.lr)
+	optimDIS = optim.RMSprop(dis.parameters(), lr = opts.lr)
 
 	#Keeping track of training
 	losses = {'enc': [], 'rec': [], 'dis':[], 'test rec':[]}
