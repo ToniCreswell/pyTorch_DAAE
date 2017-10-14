@@ -185,7 +185,7 @@ if __name__=='__main__':
 
 		#get test outuputs and losses
 		xTest, yTest = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)
-		zTest, recTest = dae.forward(xTest)
+		zTest, recTest = dae.forward(xTest)  #N.B. corruption in here
 		recLossTest = dae.rec_loss(recTest, xTest)
 
 		#Plot losses
