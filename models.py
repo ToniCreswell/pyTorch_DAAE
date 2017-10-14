@@ -100,8 +100,7 @@ class DAE(nn.Module):
 		x_i = self.decode(z)
 		save_image(x_i.data, join(exDir, 'samples0.png'))
 		for i in range(M):
-			x_i = self.corrupt(x_i)
-			z_i, x_i = self.forward(x_i)
+			z_i, x_i = self.forward(x_i) #corruption already in there!
 			save_image(x_i.data, join(exDir, 'samples'+str(i+1)+'.png'))
 
 class DIS_Z(nn.Module):
