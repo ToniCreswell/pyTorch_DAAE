@@ -106,8 +106,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	try:
 		os.mkdir(sampleDir)
 	except OSError: print 'file alread exists'
-	for m in range(M):
-		dae.sample_x(opts.M, sampleDir)
+	dae.sample_x(opts.M, sampleDir)
 
 
 
