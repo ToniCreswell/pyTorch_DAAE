@@ -81,8 +81,7 @@ def eval_mode(dae, exDir, M, testLoader):
 			diff = [torch.dot(encDxDy[k], enc00[k]).data[0]/ ((torch.norm(encDxDy[k])*torch.norm(enc00[k])).data[0] + 1e-6) for k in range(encDxDy.size(0))]
 			robustnessMap[j,i] = np.mean(diff)
 
-	print 'saving images...'
-	print np.shape(allShifts)
+	print 'saving images...', np.shape(allShifts)
 	save_image(torch.Tensor(np.asarray(allShifts)), join(exDir,'shiftImages.png'), nrow=16)
 	print robustnessMap
 
