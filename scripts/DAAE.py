@@ -107,6 +107,7 @@ def eval_mode(dae, exDir, M, testLoader):
 
 	xcorr = x.corrupt(x)
 	encCorr = dae.encodings(xcorr)
+	fig3 = plt.figure()
 	plt.histogram(encCorr.cpu().data.numpy().flatten(), 100, normed=True)
 	plt.xlabel('value')
 	plt.ylabel('freq')
