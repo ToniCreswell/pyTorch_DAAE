@@ -29,7 +29,7 @@ def get_args():
 	parser.add_argument('--root', default='/data', type=str)
 	parser.add_argument('--batchSize', default=64, type=int)
 	parser.add_argument('--maxEpochs', default=10, type=int)
-	parser.add_argument('--nz', default=100, type=int)
+	parser.add_argument('--nz', default=200, type=int)
 	parser.add_argument('--lr', default=1e-3, type=float)
 	parser.add_argument('--fSize', default=64, type=int)  # multiple of filters to use
 	parser.add_argument('--outDir', default='../../Experiments/DAAE/', type=str)
@@ -137,7 +137,7 @@ if __name__=='__main__':
 
 	#Create optimizers
 	optimDAE = optim.RMSprop(dae.parameters(), lr = opts.lr)
-	optimDIS = optim.RMSprop(dis.parameters(), lr = opts.lr, momentum=momentum)
+	optimDIS = optim.RMSprop(dis.parameters(), lr = opts.lr, momentum=opts.momentum)
 
 	#Keeping track of training
 	losses = {'enc': [], 'rec': [], 'dis':[], 'test rec':[]}
