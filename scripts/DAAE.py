@@ -105,7 +105,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	plt.title('Histrogram of encodings')
 	plt.savefig(join(exDir, 'HistEncodings.png'))
 
-	xcorr = x.corrupt(x)
+	xcorr = enc.corrupt(x)
 	encCorr = dae.encodings(xcorr)
 	fig3 = plt.figure()
 	plt.hist(encCorr.cpu().data.numpy().flatten(), 100, normed=True)
