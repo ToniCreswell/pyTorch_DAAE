@@ -26,7 +26,7 @@ from matplotlib import pyplot as plt
 
 def get_args():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--root', default='/data', type=str)
+	parser.add_argument('--root', default='/data', type=str) #data/datasets/LabelSwap
 	parser.add_argument('--batchSize', default=64, type=int)
 	parser.add_argument('--maxEpochs', default=10, type=int)
 	parser.add_argument('--nz', default=200, type=int)
@@ -78,10 +78,12 @@ def eval_mode(dae, exDir, M, testLoader):
 			# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
 			diff = [torch.dot(encDxDy[k], enc00[k]).data[0]/ ((torch.norm(encDxDy[k])*torch.norm(enc00[k])).data[0] + 1e-6) for k in range(encDxDy.size(0))]
 			robustnessMap[j,i] = np.mean(diff)
-			print robustnessMap
+	
+	print robustnessMap
 
 	fig1 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
+	f.write('robustness min: %0.5f, max: %0.5f' % (robustnessMap.min(), robustnessMap.max()))
 	plt.imshow(robustnessMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0, vmax=1)
 	plt.xlabel('DX')
 	plt.ylabel('DY')
