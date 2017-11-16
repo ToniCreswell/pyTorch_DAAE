@@ -59,7 +59,7 @@ def eval_mode(dae, exDir, M, testLoader):
 		recError.append(dae.rec_loss(recTest, x).data[0])
 	meanRecError = np.mean(recError)
 	f.write('mean reconstruction error: %0.5f' % (meanRecError))
-	f.close()
+
 
 	#eval samples ##TODO
 
@@ -88,6 +88,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	fig1 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
 	f.write('robustness min: %0.5f, max: %0.5f' % (robustnessMap.min(), robustnessMap.max()))
+	f.close()
 	plt.imshow(robustnessMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0, vmax=1)
 	plt.xlabel('DX')
 	plt.ylabel('DY')
