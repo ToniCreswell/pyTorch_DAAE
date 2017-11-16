@@ -83,7 +83,7 @@ def eval_mode(dae, exDir, M, testLoader):
 			allShifts.append(xShift[0].cpu().data.numpy().transpose(1,2,0))
 
 	print 'saving images...'
-	print type(allShifts)
+	print type(allShifts), np.shape(allShifts)
 	save_image(torch.Tensor(np.concatenate(allShifts)), join(exDir,'shiftImages.png'), nrow=16)
 	print robustnessMap
 
