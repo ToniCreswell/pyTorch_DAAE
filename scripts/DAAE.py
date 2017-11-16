@@ -75,13 +75,13 @@ def eval_mode(dae, exDir, M, testLoader):
 	for j, dx in enumerate(axis):
 		for i, dy in enumerate(axis):
 			xShift = shift_x(x, dy, dx)
-			allShifts.append(xShift)
 			encDxDy = dae.encode(xShift)
 			# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
 			diff = [torch.dot(encDxDy[k], enc00[k]).data[0]/ ((torch.norm(encDxDy[k])*torch.norm(enc00[k])).data[0] + 1e-6) for k in range(encDxDy.size(0))]
 			robustnessMap[j,i] = np.mean(diff)
+			allShifts.append(xShift.data)
 
-	print 'saving images...', np.shape(allShifts)
+	print 'saving images...'
 	save_image(torch.Tensor(np.asarray(allShifts)), join(exDir,'shiftImages.png'), nrow=16)
 	print robustnessMap
 
