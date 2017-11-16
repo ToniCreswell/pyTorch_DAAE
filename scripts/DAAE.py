@@ -82,7 +82,7 @@ def eval_mode(dae, exDir, M, testLoader):
 			robustnessMap[j,i] = np.mean(diff)
 
 	print 'saving images...'
-	save_image(torch.tensor(np.concatenate(allShifts)), join(exDir,'shiftImages'), nrow=16)
+	save_image(np.concatenate(allShifts), join(exDir,'shiftImages'), nrow=16)
 	print robustnessMap
 
 	fig1 = plt.figure()
