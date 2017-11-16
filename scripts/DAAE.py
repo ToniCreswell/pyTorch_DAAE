@@ -98,6 +98,23 @@ def eval_mode(dae, exDir, M, testLoader):
 	plt.colorbar()
 	plt.savefig(join(exDir, 'ShiftRobustness.png'))
 
+	fig2 = plt.figure()
+	plt.histogram(enc00.cpu().data.numpy().flatten(), 100, normed=True)
+	plt.xlabel('value')
+	plt.ylabel('freq')
+	plt.title('Histrogram of encodings')
+	plt.savefig(join(exDir, 'HistEncodings.png'))
+
+	xcorr = x.corrupt(x)
+	encCorr = dae.encodings(xcorr)
+	plt.histogram(encCorr.cpu().data.numpy().flatten(), 100, normed=True)
+	plt.xlabel('value')
+	plt.ylabel('freq')
+	plt.title('Histrogram of corrupted encodings')
+	plt.savefig(join(exDir, 'HistCorrEncodings.png'))
+
+
+
 	#classification
 
 	#sampling
