@@ -91,7 +91,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
 	f.write('robustness min: %0.5f, max: %0.5f' % (robustnessMap.min(), robustnessMap.max()))
 	f.close()
-	plt.imshow(np.log(robustnessMap.numpy()), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=np.log(1e-6), vmax=np.log(1))
+	plt.imshow(np.log(robustnessMap.numpy()), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=np.log2(1e-6), vmax=np.log2(1))
 	plt.xlabel('DX')
 	plt.ylabel('DY')
 	plt.title('Log Robustness to shifts in x and y')
