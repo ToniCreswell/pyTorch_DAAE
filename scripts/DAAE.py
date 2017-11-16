@@ -82,7 +82,7 @@ def eval_mode(dae, exDir, M, testLoader):
 			allShifts.append(xShift.data)
 
 	print 'saving images...'
-	print tpye(allShifts)
+	print type(allShifts)
 	save_image(allShifts, join(exDir,'shiftImages.png'), nrow=16)
 	print robustnessMap
 
