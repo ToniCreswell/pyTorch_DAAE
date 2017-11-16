@@ -133,6 +133,7 @@ if __name__=='__main__':
 		dis.cuda()
 
 	if opts.loadDAE:
+		print 'loading DAE...'
 		dae.load_params(opts.load_DAE_from)
 		print 'alpha(dae)=', dae.sigma
 		print 'alpha(opts)=', opts.sigma
