@@ -134,6 +134,8 @@ if __name__=='__main__':
 
 	if opts.loadDAE:
 		dae.load_params(opts.load_DAE_from)
+		print 'alpha(dae)=', dae.sigma
+		print 'alpha(opts)=', opts.sigma
 	if opts.evalMode:
 		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader)
 		opts.maxEpochs = 0
