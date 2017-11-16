@@ -55,7 +55,7 @@ def save_input_args(exDir, opts):
 
 
 def shift_x(x, dx, dy):
-	xShift = Variable(torch.Tensor(x.size())).type_as(x)
+	xShift = Variable(torch.Tensor(x.size()).fill_(0)).type_as(x)
 	non = lambda s: s if s<0 else None
 	mom = lambda s: max(0,s)
 
