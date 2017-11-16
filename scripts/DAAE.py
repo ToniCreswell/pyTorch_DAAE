@@ -34,7 +34,7 @@ def get_args():
 	parser.add_argument('--fSize', default=64, type=int)  # multiple of filters to use
 	parser.add_argument('--outDir', default='../../Experiments/DAAE/', type=str)
 	parser.add_argument('--commit', required=True, type=str)
-	parser.add_argument('--alpha', default=1, type=float)  # weight on the adversarial cost
+	parser.add_argument('--alpha', default=1.0, type=float)  # weight on the adversarial cost
 	parser.add_argument('--sigma', default=0.1, type=float)  # noise level
 	parser.add_argument('--M', default=5, type=int)  #number of sampling iterations
 	parser.add_argument('--loss', default='BCE', type=str) #'BCE' or 'MSE' currently supported
@@ -42,6 +42,7 @@ def get_args():
 	parser.add_argument('--load_DAE_from', default=None, type=str)
 	parser.add_argument('--evalMode', action='store_true')
 	parser.add_argument('--comment', type=str)
+	parser.add_argument('--momentum', default=0.9, type=float) 
 
 	return parser.parse_args()
 
@@ -77,6 +78,7 @@ def eval_mode(dae, exDir, M, testLoader):
 			# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
 			diff = [torch.dot(encDxDy[k], enc00[k]).data[0]/ ((torch.norm(encDxDy[k])*torch.norm(enc00[k])).data[0] + 1e-6) for k in range(encDxDy.size(0))]
 			robustnessMap[j,i] = np.mean(diff)
+			print robustnessMap
 
 	fig1 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
@@ -135,7 +137,7 @@ if __name__=='__main__':
 
 	#Create optimizers
 	optimDAE = optim.RMSprop(dae.parameters(), lr = opts.lr)
-	optimDIS = optim.RMSprop(dis.parameters(), lr = opts.lr)
+	optimDIS = optim.RMSprop(dis.parameters(), lr = opts.lr, momentum=momentum)
 
 	#Keeping track of training
 	losses = {'enc': [], 'rec': [], 'dis':[], 'test rec':[]}
