@@ -122,6 +122,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	plt.title('Comparing Encodings')
 	plt.xlabel('Value')
 	plt.ylabel('pdf')
+	plt.legend()
 	plt.savefig(join(exDir, 'HisEnc.png'))
 
 
