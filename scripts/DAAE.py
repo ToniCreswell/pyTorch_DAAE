@@ -113,7 +113,7 @@ def eval_mode(dae, exDir, M, testLoader):
 	# plt.ylabel('freq')
 	# plt.title('Histrogram of corrupted encodings')
 	# plt.savefig(join(exDir, 'HistCorrEncodings.png'))
-	nNorm, bNorm, _ = plt.hist(np.random.randn(1e4),100, normed=True)
+	nNorm, bNorm, _ = plt.hist(np.random.randn(1000), 100, normed=True)
 
 	plt.plot(bEnc, nEnc, label='encoding')
 	plt.plot(bEncCorr, nEncCorr, label='corrupted encoding')
