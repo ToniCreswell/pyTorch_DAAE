@@ -117,7 +117,7 @@ def eval_mode(dae, exDir, M, testLoader):
 
 	plt.plot(bEnc[1:], nEnc, label='encoding')
 	plt.plot(bEncCorr[1:], nEncCorr, label='corrupted encoding')
-	plt.plot(nNorm[1:], bNorm, label='Normal')
+	plt.plot(bNorm[1:], nNorm, label='Normal')
 	plt.title('Comparing Encodings')
 	plt.xlabel('Value')
 	plt.ylabel('pdf')
