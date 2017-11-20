@@ -115,9 +115,9 @@ def eval_mode(dae, exDir, M, testLoader):
 	# plt.savefig(join(exDir, 'HistCorrEncodings.png'))
 	nNorm, bNorm, _ = plt.hist(np.random.randn(1000), 100, normed=True)
 
-	plt.plot(bEnc, nEnc, label='encoding')
-	plt.plot(bEncCorr, nEncCorr, label='corrupted encoding')
-	plt.plot(nNorm, bNorm, label='Normal')
+	plt.plot(bEnc[1:], nEnc, label='encoding')
+	plt.plot(bEncCorr[1:], nEncCorr, label='corrupted encoding')
+	plt.plot(nNorm[1:], bNorm, label='Normal')
 	plt.title('Comparing Encodings')
 	plt.xlabel('Value')
 	plt.ylabel('pdf')
