@@ -174,6 +174,10 @@ if __name__=='__main__':
 	#Start training
 	for e in range(opts.maxEpochs):
 
+		epochEncLoss=0
+		epochRecLoss=0
+		epochDisLoss=0
+
 		for i, data in enumerate(trainLoader):
 
 			T = time()
@@ -203,12 +207,17 @@ if __name__=='__main__':
 			optimDAE.step()
 
 			# storing losses for plotting later
-			losses['enc'].append(encLoss.data[0])
-			losses['rec'].append(recLoss.data[0])
-			losses['dis'].append(disLoss.data[0])
+			epochEncLoss+=encLoss.data[0]
+			epochRecLoss+=recLoss.data[0]
+			epochDisLoss+=disLoss.data[0]
 
 			if i%100 == 0:
 				print '[%d, %d] enc: %0.5f, rec: %0.5f, dis: %0.5f, time: %0.3f' % (e, i, encLoss.data[0], recLoss.data[0], disLoss.data[0], time() - T)
+
+		# storing losses for plotting later
+		losses['enc'].append(epochEncLoss/i)
+		losses['rec'].append(epochRecLoss/i)
+		losses['dis'].append(epochDisLoss/i)
 
 		#### Test
 		dae.eval()
