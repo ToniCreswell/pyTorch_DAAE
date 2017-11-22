@@ -178,10 +178,9 @@ class LINEAR_SVM(nn.Module):
     	loss = torch.mean(torch.clamp(1 - output * y, min=0))  # hinge loss
         loss += c * torch.mean(self.fc.weight**2)  # l2 penalty
 
-    def save_params(self, exDir):
+	def save_params(self, exDir):
 		print 'saving params...'
 		torch.save(self.state_dict(), join(exDir, 'linearSVM_params'))
-
 
 	def load_params(self, exDir):
 		print 'loading params...'
