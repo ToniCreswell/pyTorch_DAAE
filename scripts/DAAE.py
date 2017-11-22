@@ -132,7 +132,6 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 	print 'training svm...'
 	dae.eval()
-	svm.train()
 	optimSVM = optim.SGD(svm.parameters(), lr=lr) #optimizer  
 
 	f = open(join(exDir, 'svmOpts.txt'), 'w')
@@ -141,6 +140,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 
 	svmLoss = {'train':[], 'test':[]}
 	for epoch in range(opts.maxEpochs):
+		svm.train()
 		epochLoss_svm = 0
 		T = time()
 		for i, data in enumerate(trainLoader):
@@ -159,6 +159,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		svm.save_params(exDir)
 
 		#test loss:
+		svm.eval()
 		xTest, yTest = prep_data(iter(testLoader).next(), useCUDA=svm.useCUDA)
 		testInputs = dae.encode(xTest)
 		testOutputs = svm.forward(testInputs)
