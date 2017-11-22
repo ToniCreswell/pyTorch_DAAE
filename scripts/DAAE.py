@@ -152,10 +152,10 @@ def train_svm(dae, svm, trainLoader, testLoader, c, exDir):
 			optimSVM.zero_grad()  #zero grad
 			loss.backwards()  #backwards
 			optimSVM.setp()  #step
-
 			epochLoss_svm+=loss.data[0]
 		print '[%d] loss: %0.5f, time: %0.3f' % (epoch, epochLoss_svm/i, time() - T)
 		svmLoss['train'].append(epochLoss_svm/i)
+		svm.save_params(exDir)
 
 		#test loss:
 		xTest, yTest = prep_data(iter(testLoader).next(), useCUDA=svm.useCUDA)
