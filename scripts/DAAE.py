@@ -180,7 +180,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		bestScore, bestThresh = svm.choose_thresh(output, y) #do on a training batch
 		testScore = svm.binary_class_score(testOutputs, yTest)
 		f.write('bestScore: %f\%\nbestThresh: %f\ntestScore: %f\%' \
-		 % (bestScore, bestThresh, testScore))
+		 % (bestScore, bestThresh, testScore.mean().data[0]))
 		f.close()
  	
 	return svm
@@ -225,7 +225,7 @@ if __name__=='__main__':
 	if opts.evalMode:
 		assert opts.loadDAE == True
 		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader, svm=svm)
-		opts.maxEpochs = 0
+		exit()
 	else:
 		#Create a folder for this experiment
 		exDir = make_new_folder(opts.outDir)
