@@ -175,6 +175,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 			plot_losses(svmLoss, exDir=exDir, epochs=epoch+1, title='SVM_loss')
 
 		#find the threshold that gives best classification 
+		svm.thresh=0.0
 		bestScore, bestThresh = svm.choose_thresh(output, y) #do on a training batch
 		testScore = svm.binary_class_score(testOutputs, yTest)
 		f.write('bestScore: %f\%\nbestThresh: %f\ntestScore: %f\%' \
