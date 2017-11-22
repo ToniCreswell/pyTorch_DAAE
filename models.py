@@ -171,6 +171,7 @@ class LINEAR_SVM(nn.Module):
 		self.c = c
 		self.fc = nn.Linear(nz, 1)
 		self.useCUDA = torch.cuda.is_available()
+		self.thresh = 0.5
 
 	def forward(self, x):
 		h = self.fc(x)
@@ -180,6 +181,28 @@ class LINEAR_SVM(nn.Module):
 		loss = torch.mean(torch.clamp(1 - output * y, min=0))  # hinge loss
 		loss += self.c * torch.mean(self.fc.weight**2)  # l2 penalty
 		return loss
+
+	def binary_class_score(self, output, target, thresh=None):
+		if thresh is not None:
+			thresh = self.thresh
+		predLabel = torch.gt(output, self.thresh)
+		classScoreTest = torch.eq(predLabel, target.type_as(predLabel))
+		return  classScoreTest.float().sum()/target.size(0)
+
+	def choose_thresh(self, output, target):
+		bestScore=0
+		bestThresh=0
+		for thresh in ap.arange(0,1,0.1):
+			score=binary_class_score(output, target, thresh=thresh)
+			if score > bestScore:
+				bestScore = score
+				bestThresh = thresh
+		self.thresh = bestThresh
+		return bestScore, bestThresh
+
+
+
+
 
 	def save_params(self, exDir):
 		print 'saving params...'

@@ -45,6 +45,7 @@ def get_args():
 	parser.add_argument('--momentum', default=0.9, type=float) 
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
 	parser.add_argument('--svmLR', type=float, default=1e-3)
+	parser.add_argument('--thresh', required=True, type=float) #this is the SVM threshold -- will be saved in svm.txt
 	return parser.parse_args()
 
 
@@ -139,7 +140,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 
 	f = open(join(exDir, 'svm.txt'), 'w')
 	f.write('smvLR: %0.5f\nc: %0.5f\n' % (lr, svm.c))
-	f.close()
+	# f.close() don't close, used later, close later
 
 
 	svmLoss = {'train':[], 'test':[]}
@@ -172,7 +173,14 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 
 		if epoch > 1:
 			plot_losses(svmLoss, exDir=exDir, epochs=epoch+1, title='SVM_loss')
-	
+
+		#find the threshold that gives best classification 
+		bestScore, bestThresh = svm.choose_thresh(output, y) #do on a training batch
+		testScore = svm.binary_class_score(testOutputs, yTest)
+		f.write('bestScore: %f\%\nbestThresh: %f\ntestScore: %f\%' \
+		 % (bestScore, bestThresh, testScore))
+		f.close()
+ 	
 	return svm
 
 
@@ -205,6 +213,7 @@ if __name__=='__main__':
 		dae.load_params(opts.load_DAE_from)
 		try:
 			svm.load_params(opts.load_SMV_from) #use SVM @ same location as DAE [may not be one there]
+			svm.thresh = opts.thresh
 		except:
 			svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.load_DAE_from, lr=opts.svmLR)
 	if opts.evalMode:
