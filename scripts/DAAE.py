@@ -179,7 +179,9 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		#find the threshold that gives best classification 
 		bestScore, bestThresh = svm.choose_thresh(output, y) #do on a training batch
 		testScore = svm.binary_class_score(testOutputs, yTest)
-		f.write('bestScore: %f\%\nbestThresh: %f\ntestScore: %f\%' \
+		print type(bestScore), type(bestThresh), type(testScore.mean().data[0])
+		print testScore
+		f.write('bestScore: %f \%\nbestThresh: %f \%\ntestScore: %f\%' \
 		 % (bestScore, bestThresh, testScore.mean().data[0]))
 		f.close()
  	
