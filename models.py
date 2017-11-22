@@ -196,8 +196,8 @@ class LINEAR_SVM(nn.Module):
 		bestThresh=0
 		for thresh in np.arange(0,1,0.1):
 			score=self.binary_class_score(output, target, thresh=thresh)
-			if score.mean() > bestScore:
-				bestScore = score.mean()
+			if score.mean().data[0] > bestScore:
+				bestScore = score.mean().data[0]
 				bestThresh = thresh
 		self.thresh = bestThresh
 		return bestScore, bestThresh
