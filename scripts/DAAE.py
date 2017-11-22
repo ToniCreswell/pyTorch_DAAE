@@ -131,7 +131,6 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 
 def train_svm(dae, svm, trainLoader, testLoader, exDir):
 	print 'training svm...'
-	help(svm)
 	dae.eval()
 	svm.train()
 	optimSVM = optim.SGD(svm.parameters(), lr=0.1) #optimizer
