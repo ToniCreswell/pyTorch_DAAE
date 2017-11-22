@@ -135,7 +135,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 	svm.train()
 	optimSVM = optim.SGD(svm.parameters(), lr=lr) #optimizer  
 
-	f.open(join(exDir, 'svmOpts.txt'), 'w')
+	f = open(join(exDir, 'svmOpts.txt'), 'w')
 	f.write('smvLR: %0.5f\nc: %0.5f\n' % (lr, svm.c))
 	f.close()
 
