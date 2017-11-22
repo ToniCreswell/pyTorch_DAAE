@@ -188,7 +188,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		trainScore = svm.binary_class_score(output, y) #has threshold as zero for output in [-1,1]
 		f = open(join(exDir, 'svm.txt'), 'w')
 		f.write('trainScore: %f \ntestScore: %f ' \
-		 % (trainScore, testScore.mean().data[0]))
+		 % (trainScore.mean().data[0], testScore.mean().data[0]))
 		f.close()
  	
 	return svm
