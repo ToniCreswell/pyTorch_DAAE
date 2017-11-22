@@ -180,6 +180,7 @@ class LINEAR_SVM(nn.Module):
 		return h
 
 	def loss(self, output, y):
+		# assert (y.min() != 0) #want y in [-1,1]
 		loss = torch.mean(torch.clamp(1 - output * y, min=0))  # hinge loss
 		loss += self.c * torch.mean(self.fc.weight**2)  # l2 penalty
 		return loss

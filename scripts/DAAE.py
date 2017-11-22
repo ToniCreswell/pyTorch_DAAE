@@ -49,6 +49,22 @@ def get_args():
 	
 	return parser.parse_args()
 
+def svm_score(svm, y, x=None, enc=None, dae=None):
+	'''
+	EITHER
+		take a data sample x AND a dae
+	OR
+		take an encoding
+	and apply SVM and get score
+
+	'''
+	assert (x is not None) or (enc is not None)
+	if enc is None:
+		assert dae is not None
+		enc = dae.encode(x)
+	output = svm.forwad(enc)
+	score = svm.binary_class_score(output, y)
+	return score
 
 def eval_mode(dae, exDir, M, testLoader, svm=None):
 	f = open(join(exDir, 'outputs.txt'), 'w')
@@ -73,6 +89,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	step = 4
 	axis = range(-maxShift, maxShift, step)
 	robustnessMap = torch.Tensor(maxShift*2//step, maxShift*2//step).fill_(0)
+	classMap = torch.Tensor(maxShift*2//step, maxShift*2//step).fill_(0)
 	x, y = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)  #take a batch of samples
 	allShifts=[]
 	enc00 = dae.encode(x)
@@ -83,6 +100,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 			# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
 			diff = [torch.dot(encDxDy[k], enc00[k]).data[0]/ ((torch.norm(encDxDy[k])*torch.norm(enc00[k])).data[0] + 1e-6) for k in range(encDxDy.size(0))]
 			robustnessMap[j,i] = np.mean(diff)
+			classMap[i,j] = svm_score(svm, y, enc=encDxDy)
 
 			allShifts.append(xShift[0].cpu().data.numpy())
 
@@ -92,16 +110,25 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	print robustnessMap
 
 	# plot shift robustenss map
-	fig1 = plt.figure()
+	fig0 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
-	f.write('robustness min: %0.5f, max: %0.5f' % (robustnessMap.min(), robustnessMap.max()))
-	f.close()
+	f.write('\nrobustness min: %0.5f, max: %0.5f' % (robustnessMap.min(), robustnessMap.max()))
 	plt.imshow(robustnessMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.0, vmax=1.0)
 	plt.xlabel('DX')
 	plt.ylabel('DY')
 	plt.title('Robustness to shifts in x and y')
 	plt.colorbar()
 	plt.savefig(join(exDir, 'ShiftRobustness.png'))
+
+	#Plot shift robusteness classification map
+	fig1 = plt.figure()
+	f.write('\nshift robustenss accuracy min: %0.5f, max: %0.5f' % (classMap.min(), classMap.max()))
+	plt.imshow(classMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.0, vmax=1.0)
+	plt.xlabel('DX')
+	plt.ylabel('DY')
+	plt.title('Classiciation Robustness to shifts in x and y')
+	plt.colorbar()
+	plt.savefig(join(exDir, 'ClassificationShiftRobustness.png'))
 
 	## Compare histograms for enc, norm and encCorr
 	fig2 = plt.figure()
@@ -129,9 +156,19 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	except OSError: print 'file alread exists'
 	dae.sample_x(opts.M, sampleDir)
 
-	#classification
+	## classification test score
 	if svm is not None:
 		'Do classification'
+		testScore = 0
+		for i, data in enumerate(testLoader):
+			x, y = prep_data(data)
+			score = svm_score(svm, y, x=x, dae=dae) 
+			testScore+=score
+	testScore /= (i+1)
+	f.write('SVM classification (test) score:'+str(testScore.data[0]))
+	f.close()
+
+
 
 
 def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
