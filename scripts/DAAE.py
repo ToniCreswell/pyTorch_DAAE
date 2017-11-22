@@ -39,6 +39,7 @@ def get_args():
 	parser.add_argument('--M', default=5, type=int)  #number of sampling iterations
 	parser.add_argument('--loss', default='BCE', type=str) #'BCE' or 'MSE' currently supported
 	parser.add_argument('--loadDAE', action='store_true')
+	parser.add_argument('--loadSVM', action='store_true')
 	parser.add_argument('--load_DAE_from', default=None, type=str)
 	parser.add_argument('--evalMode', action='store_true')
 	parser.add_argument('--comment', type=str)
@@ -46,6 +47,7 @@ def get_args():
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
 	parser.add_argument('--svmLR', type=float, default=1e-3)
 	parser.add_argument('--thresh', required=True, type=float) #this is the SVM threshold -- will be saved in svm.txt
+	
 	return parser.parse_args()
 
 
@@ -206,15 +208,20 @@ if __name__=='__main__':
 		dis.cuda()
 		svm.cuda()
 
-	if opts.loadDAE or opts.evalMode:  #should load DAE if in eval mode
+
+	if opts.loadDAE:  #should load DAE if in eval mode
 		print 'loading DAE...'
 		dae.load_params(opts.load_DAE_from)
-		try:
-			svm.load_params(opts.load_SMV_from) #use SVM @ same location as DAE [may not be one there]
+
+	if opts.loadSVM:
+			svm.load_params(opts.load_DAE_from) #use SVM @ same location as DAE [may not be one there]
 			svm.thresh = opts.thresh
-		except:
+	
+	if opts.evalMode & (not opts.loadSVM):  #to train an SVM for eval
 			svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.load_DAE_from, lr=opts.svmLR)
+
 	if opts.evalMode:
+		assert opts.loadDAE == True
 		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader, svm=svm)
 		opts.maxEpochs = 0
 	else:
