@@ -178,7 +178,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 
 		#find the threshold that gives best classification 
 		bestScore, bestThresh = svm.choose_thresh(output, y) #do on a training batch
-		testScore = svm.binary_class_score(testOutputs, yTest)
+		testScore = svm.binary_class_score(testOutputs, yTest, bestThresh)
 		print type(bestScore), type(bestThresh), type(testScore.mean().data[0])
 		print testScore
 		f = open(join(exDir, 'svm.txt'), 'w')

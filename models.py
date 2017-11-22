@@ -185,7 +185,7 @@ class LINEAR_SVM(nn.Module):
 		return loss
 
 	def binary_class_score(self, output, target, thresh=None):
-		if thresh is not None:
+		if thresh is None:
 			thresh = self.thresh
 		predLabel = torch.gt(output, thresh)
 		classScoreTest = torch.eq(predLabel, target.type_as(predLabel))
