@@ -167,6 +167,8 @@ class LINEAR_SVM(nn.Module):
 
     def __init__(self, nz, c):
         super(LINEAR_SVM, self).__init__()
+        self.nz = nz
+        self.c = c
         self.fc = nn.Linear(nz, 1)
         self.useCUDA = torch.cuda.is_available()
 
@@ -176,7 +178,7 @@ class LINEAR_SVM(nn.Module):
 
     def loss(self, output, y):
     	loss = torch.mean(torch.clamp(1 - output * y, min=0))  # hinge loss
-        loss += c * torch.mean(self.fc.weight**2)  # l2 penalty
+        loss += self.c * torch.mean(self.fc.weight**2)  # l2 penalty
 
 	def save_params(self, exDir):
 		print 'saving params...'
