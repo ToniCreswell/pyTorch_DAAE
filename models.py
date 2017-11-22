@@ -7,6 +7,8 @@ from torch.nn.utils import clip_grad_norm
 
 from torchvision.utils import make_grid, save_image
 
+import numpy as np
+
 import os
 from os.path import join
 
@@ -199,10 +201,6 @@ class LINEAR_SVM(nn.Module):
 				bestThresh = thresh
 		self.thresh = bestThresh
 		return bestScore, bestThresh
-
-
-
-
 
 	def save_params(self, exDir):
 		print 'saving params...'
