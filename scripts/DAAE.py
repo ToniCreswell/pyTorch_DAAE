@@ -129,7 +129,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 		'Do classification'
 
 
-def train_svm(dae, svm, trainLoader, testLoader, c, exDir):
+def train_svm(dae, svm, trainLoader, testLoader, exDir):
 	print 'training svm...'
 	dae.eval()
 	svm.train()
@@ -181,7 +181,7 @@ if __name__=='__main__':
 	#Create model
 	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma) #sigma=level of corruption
 	dis = DIS_Z(nz=opts.nz)
-	svm = LINEAR_SVM(c=c) #model
+	svm = LINEAR_SVM(c=opts.c) #model
 
 	if dae.useCUDA:
 		dae.cuda()
@@ -194,7 +194,7 @@ if __name__=='__main__':
 		try:
 			svm.load_params(opts.load_SMV_from) #use SVM @ same location as DAE [may not be one there]
 		except:
-			svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, c=opts.c, exDir=opts.load_DAE_from)
+			svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.load_DAE_from)
 	if opts.evalMode:
 		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader, svm=svm)
 		opts.maxEpochs = 0
@@ -293,7 +293,7 @@ if __name__=='__main__':
 
 
 	#Train a linear-SVM classifier on the enocdings
-	svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, c=opts.c, exDir=opts.exDir)
+	svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.exDir)
 
 
 
