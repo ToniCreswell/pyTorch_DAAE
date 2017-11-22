@@ -100,7 +100,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 			# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
 			diff = [torch.dot(encDxDy[k], enc00[k]).data[0]/ ((torch.norm(encDxDy[k])*torch.norm(enc00[k])).data[0] + 1e-6) for k in range(encDxDy.size(0))]
 			robustnessMap[j,i] = np.mean(diff)
-			classMap[i,j] = svm_score(svm, y, enc=encDxDy).data[0]
+			classMap[j,i] = svm_score(svm, y, enc=encDxDy).data[0]
 
 			allShifts.append(xShift[0].cpu().data.numpy())
 
