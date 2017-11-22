@@ -181,7 +181,7 @@ if __name__=='__main__':
 	#Create model
 	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma) #sigma=level of corruption
 	dis = DIS_Z(nz=opts.nz)
-	svm = LINEAR_SVM(c=opts.c) #model
+	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
 
 	if dae.useCUDA:
 		dae.cuda()
