@@ -51,7 +51,8 @@ def get_args():
 def eval_mode(dae, exDir, M, testLoader, svm=None):
 	f = open(join(exDir, 'outputs.txt'), 'w')
 	dae.eval()
-	#reconstruction error and t-SNE
+
+	## reconstruction error ##
 	recError = []
 	print 'calculating reconstruction error...'
 	for i, data in enumerate(testLoader):
@@ -64,7 +65,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 
 	#eval samples ##TODO
 
-	#representation robustness (shift)
+	## representation robustness (shift) ##
 	print 'performing robustness plot...'
 	maxShift = x.size(2)//2
 	step = 4
@@ -88,6 +89,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	save_image(torch.Tensor(np.asarray(allShifts)), join(exDir,'shiftImages.png'), nrow=16)
 	print robustnessMap
 
+	# plot shift robustenss map
 	fig1 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
 	f.write('robustness min: %0.5f, max: %0.5f' % (robustnessMap.min(), robustnessMap.max()))
@@ -99,6 +101,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	plt.colorbar()
 	plt.savefig(join(exDir, 'ShiftRobustness.png'))
 
+	## Compare histograms for enc, norm and encCorr
 	fig2 = plt.figure()
 	nEnc, bEnc, _ = plt.hist(enc00.cpu().data.numpy().flatten(), 100, normed=True)
 	xcorr = dae.corrupt(x)
@@ -134,9 +137,10 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 	dae.eval()
 	optimSVM = optim.SGD(svm.parameters(), lr=lr) #optimizer  
 
-	f = open(join(exDir, 'svmOpts.txt'), 'w')
+	f = open(join(exDir, 'svm.txt'), 'w')
 	f.write('smvLR: %0.5f\nc: %0.5f\n' % (lr, svm.c))
 	f.close()
+
 
 	svmLoss = {'train':[], 'test':[]}
 	for epoch in range(opts.maxEpochs):
@@ -167,7 +171,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		svmLoss['test'].append(testLoss.data[0])
 
 		if epoch > 1:
-			plot_losses(svmLoss, exDir=exDir, epochs=epoch, title='SVM_loss')
+			plot_losses(svmLoss, exDir=exDir, epochs=epoch+1, title='SVM_loss')
 	
 	return svm
 
