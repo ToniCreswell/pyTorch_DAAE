@@ -129,11 +129,11 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 		'Do classification'
 
 
-def train_svm(dae, svm, trainLoader, testLoader, exDir):
+def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 	print 'training svm...'
 	dae.eval()
 	svm.train()
-	optimSVM = optim.SGD(svm.parameters(), lr=opts.svmLR) #optimizer  
+	optimSVM = optim.SGD(svm.parameters(), lr=lr) #optimizer  
 
 	svmLoss = {'train':[], 'test':[]}
 	for epoch in range(opts.maxEpochs):
@@ -163,7 +163,10 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir):
 
 		if epoch > 1:
 			plot_losses(svmLoss, exDir=exDir, epochs=epoch, title='SVM_loss')
-	
+		
+		f.open(join(exDir, 'svmOpts.txt'), 'w')
+		f.write('smvLR: %0.5f\nc: %0.5f\n' % (lr, svm.c))
+		f.close()
 	return svm
 
 
@@ -197,7 +200,7 @@ if __name__=='__main__':
 		try:
 			svm.load_params(opts.load_SMV_from) #use SVM @ same location as DAE [may not be one there]
 		except:
-			svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.load_DAE_from)
+			svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.load_DAE_from, lr=opts.svmLR)
 	if opts.evalMode:
 		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader, svm=svm)
 		opts.maxEpochs = 0
@@ -296,7 +299,7 @@ if __name__=='__main__':
 
 
 	#Train a linear-SVM classifier on the enocdings
-	svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.exDir)
+	svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.exDir, lr=opts.svmLR)
 
 
 
