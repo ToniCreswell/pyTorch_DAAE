@@ -46,7 +46,6 @@ def get_args():
 	parser.add_argument('--momentum', default=0.9, type=float) 
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
 	parser.add_argument('--svmLR', type=float, default=1e-3)
-	parser.add_argument('--thresh', required=True, type=float) #this is the SVM threshold -- will be saved in svm.txt
 	
 	return parser.parse_args()
 
@@ -162,7 +161,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 			x, y = prep_data(data, useCUDA=svm.useCUDA)  #prep data as a var
 			inputs = dae.encode(x)  #get encodings as input
 			output = svm.forward(inputs)  #get output
-			loss = svm.loss(output, yTrain * 2 - 1)  #calc loss 
+			loss = svm.loss(output, y * 2 - 1)  #calc loss 
 			optimSVM.zero_grad()  #zero grad
 			loss.backward()  #backwards
 			optimSVM.step()  #step
@@ -184,14 +183,12 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		if epoch > 1:
 			plot_losses(svmLoss, exDir=exDir, epochs=epoch+1, title='SVM_loss')
 
-		#find the threshold that gives best classification 
-		bestScore, bestThresh = svm.choose_thresh(output+1//2, y) #do on a training batch
-		testScore = svm.binary_class_score(testOutputs+1//2, yTest, bestThresh)
-		print type(bestScore), type(bestThresh), type(testScore.mean().data[0])
-		print testScore
+		#Do classification
+		testScore = svm.binary_class_score(testOutputs, yTest) #has threshold as zero for testOutputs in [-1,1]
+		trainScore = svm.binary_class_score(output, y) #has threshold as zero for output in [-1,1]
 		f = open(join(exDir, 'svm.txt'), 'w')
-		f.write('bestScore: %f \nbestThresh: %f \ntestScore: %f ' \
-		 % (bestScore, bestThresh, testScore.mean().data[0]))
+		f.write('trainScore: %f \ntestScore: %f ' \
+		 % (trainScore, testScore.mean().data[0]))
 		f.close()
  	
 	return svm
@@ -228,7 +225,6 @@ if __name__=='__main__':
 
 	if opts.loadSVM:
 			svm.load_params(opts.load_DAE_from) #use SVM @ same location as DAE [may not be one there]
-			svm.thresh = opts.thresh
 	
 	if opts.evalMode & (not opts.loadSVM):  #to train an SVM for eval
 			svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.load_DAE_from, lr=opts.svmLR)

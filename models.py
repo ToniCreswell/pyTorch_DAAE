@@ -184,25 +184,23 @@ class LINEAR_SVM(nn.Module):
 		loss += self.c * torch.mean(self.fc.weight**2)  # l2 penalty
 		return loss
 
-	def binary_class_score(self, output, target, thresh=None):
-		if thresh is None:
-			thresh = self.thresh
+	def binary_class_score(self, output, target, thresh=0):
 		predLabel = torch.gt(output, thresh)
 		classScoreTest = torch.eq(predLabel, target.type_as(predLabel))
 		return  classScoreTest.float().sum()/target.size(0)
 
-	def choose_thresh(self, output, target):
-		bestScore=-1.0
-		bestThresh=0.0
-		for thresh in np.arange(0,1,0.1):
-			score=self.binary_class_score(output, target, thresh=thresh)
-			if score.mean().data[0] > bestScore:
-				bestScore = score.mean().data[0]
-				bestThresh = thresh
-			print 'thresh: %f, score %f' % (thresh, score.mean().data[0])
-		self.thresh = bestThresh
-		print 'best: thresh: %f, score %f' % (bestThresh, bestScore)
-		return bestScore, bestThresh
+	# def choose_thresh(self, output, target): #not needed for svm use 0 if [-1,1]
+	# 	bestScore=-1.0
+	# 	bestThresh=0.0
+	# 	for thresh in np.arange(0,1,0.1):
+	# 		score=self.binary_class_score(output, target, thresh=thresh)
+	# 		if score.mean().data[0] > bestScore:
+	# 			bestScore = score.mean().data[0]
+	# 			bestThresh = thresh
+	# 		print 'thresh: %f, score %f' % (thresh, score.mean().data[0])
+	# 	self.thresh = bestThresh
+	# 	print 'best: thresh: %f, score %f' % (bestThresh, bestScore)
+	# 	return bestScore, bestThresh
 
 	def save_params(self, exDir):
 		print 'saving params...'
