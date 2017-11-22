@@ -187,7 +187,7 @@ class LINEAR_SVM(nn.Module):
 	def binary_class_score(self, output, target, thresh=None):
 		if thresh is not None:
 			thresh = self.thresh
-		predLabel = torch.gt(output, self.thresh)
+		predLabel = torch.gt(output, thresh)
 		classScoreTest = torch.eq(predLabel, target.type_as(predLabel))
 		return  classScoreTest.float().sum()/target.size(0)
 
