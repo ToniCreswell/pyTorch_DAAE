@@ -162,7 +162,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		xTest, yTest = prep_data(iter(testLoader).next(), useCUDA=svm.useCUDA)
 		testInputs = dae.encode(xTest)
 		testOutputs = svm.forward(testInputs)
-		testLoss = svm.loss(testOutputs, testInputs)
+		testLoss = svm.loss(testOutputs, yTest)
 		svmLoss['test'].append(testLoss.data[0])
 
 		if epoch > 1:
