@@ -44,7 +44,7 @@ def get_args():
 	parser.add_argument('--comment', type=str)
 	parser.add_argument('--momentum', default=0.9, type=float) 
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
-
+	parser.add_argument('--svmLR', type=float, default=1e-3)
 	return parser.parse_args()
 
 
@@ -133,7 +133,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir):
 	print 'training svm...'
 	dae.eval()
 	svm.train()
-	optimSVM = optim.SGD(svm.parameters(), lr=0.1) #optimizer
+	optimSVM = optim.SGD(svm.parameters(), lr=opts.svmLR) #optimizer  
 
 	svmLoss = {'train':[], 'test':[]}
 	for epoch in range(opts.maxEpochs):
