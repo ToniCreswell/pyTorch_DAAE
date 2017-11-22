@@ -136,7 +136,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir):
 	optimSVM = optim.SGD(svm.parameters(), lr=0.1) #optimizer
 
 	svmLoss = {'train':[], 'test':[]}
-	for epoch in range(opts.epochs):
+	for epoch in range(opts.maxEpochs):
 		epochLoss_svm = 0
 		T = time()
 		for i, data in enumerate(trainLoader):
