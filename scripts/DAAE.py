@@ -136,6 +136,14 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 
 
 def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
+	'''
+	Data y is [0,1]
+	For training SVM must be -1, 1
+	To eval data put back to [0,1]
+
+	To get loss use [-1,1] for train and test
+	To get score use [0,1] for train and test
+	'''
 	print 'training svm...'
 	dae.eval()
 	optimSVM = optim.SGD(svm.parameters(), lr=lr) #optimizer  
@@ -154,7 +162,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 			x, y = prep_data(data, useCUDA=svm.useCUDA)  #prep data as a var
 			inputs = dae.encode(x)  #get encodings as input
 			output = svm.forward(inputs)  #get output
-			loss = svm.loss(output, y)  #calc loss
+			loss = svm.loss(output, yTrain * 2 - 1)  #calc loss 
 			optimSVM.zero_grad()  #zero grad
 			loss.backward()  #backwards
 			optimSVM.step()  #step
@@ -170,15 +178,15 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		xTest, yTest = prep_data(iter(testLoader).next(), useCUDA=svm.useCUDA)
 		testInputs = dae.encode(xTest)
 		testOutputs = svm.forward(testInputs)
-		testLoss = svm.loss(testOutputs, yTest)
+		testLoss = svm.loss(testOutputs, yTest * 2 - 1)
 		svmLoss['test'].append(testLoss.data[0])
 
 		if epoch > 1:
 			plot_losses(svmLoss, exDir=exDir, epochs=epoch+1, title='SVM_loss')
 
 		#find the threshold that gives best classification 
-		bestScore, bestThresh = svm.choose_thresh(output, y) #do on a training batch
-		testScore = svm.binary_class_score(testOutputs, yTest, bestThresh)
+		bestScore, bestThresh = svm.choose_thresh(output+1//2, y) #do on a training batch
+		testScore = svm.binary_class_score(testOutputs+1//2, yTest, bestThresh)
 		print type(bestScore), type(bestThresh), type(testScore.mean().data[0])
 		print testScore
 		f = open(join(exDir, 'svm.txt'), 'w')
