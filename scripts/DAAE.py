@@ -140,9 +140,9 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 	dae.eval()
 	optimSVM = optim.SGD(svm.parameters(), lr=lr) #optimizer  
 
-	f = open(join(exDir, 'svm.txt'), 'w')
+	f = open(join(exDir, 'svmOpts.txt'), 'w')
 	f.write('smvLR: %0.5f\nc: %0.5f\n' % (lr, svm.c))
-	# f.close() don't close, used later, close later
+	f.close() 
 
 
 	svmLoss = {'train':[], 'test':[]}
@@ -181,6 +181,7 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir, lr):
 		testScore = svm.binary_class_score(testOutputs, yTest)
 		print type(bestScore), type(bestThresh), type(testScore.mean().data[0])
 		print testScore
+		f = open(join(exDir, 'svm.txt'), 'w')
 		f.write('bestScore: %f \nbestThresh: %f \ntestScore: %f ' \
 		 % (bestScore, bestThresh, testScore.mean().data[0]))
 		f.close()
