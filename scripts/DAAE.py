@@ -161,7 +161,8 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir):
 		testLoss = svm.loss(testOutputs, testInputs)
 		svmLoss['test'].append(testLoss.data[0])
 
-		plot_losses(svmLoss, exDir=exDir, epochs=1, title='SVM_loss')
+		if epoch > 1:
+			plot_losses(svmLoss, exDir=exDir, epochs=epoch, title='SVM_loss')
 	
 	return svm
 
