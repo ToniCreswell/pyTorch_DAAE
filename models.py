@@ -192,14 +192,16 @@ class LINEAR_SVM(nn.Module):
 		return  classScoreTest.float().sum()/target.size(0)
 
 	def choose_thresh(self, output, target):
-		bestScore=0
-		bestThresh=0
+		bestScore=-1.0
+		bestThresh=0.0
 		for thresh in np.arange(0,1,0.1):
 			score=self.binary_class_score(output, target, thresh=thresh)
 			if score.mean().data[0] > bestScore:
 				bestScore = score.mean().data[0]
 				bestThresh = thresh
+			print 'thresh: %f, score %f' % (thresh, score)
 		self.thresh = bestThresh
+		print 'best: thresh: %f, score %f' % (bestThresh, bestScore)
 		return bestScore, bestThresh
 
 	def save_params(self, exDir):
