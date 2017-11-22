@@ -302,10 +302,10 @@ if __name__=='__main__':
 
 	if not opts.evalMode:
 		eval_mode(dae=dae, exDir=exDir, M=20, testLoader=testLoader, svm=svm)
+		svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=exDir, lr=opts.svmLR)
 
 
 	#Train a linear-SVM classifier on the enocdings
-	svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, exDir=opts.exDir, lr=opts.svmLR)
 
 
 
