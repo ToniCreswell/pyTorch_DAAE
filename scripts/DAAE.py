@@ -148,7 +148,9 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir):
 			loss.backward()  #backwards
 			optimSVM.step()  #step
 			epochLoss_svm+=loss.data[0]
-		print '[%d] loss: %0.5f, time: %0.3f' % (epoch, epochLoss_svm/i, time() - T)
+
+			if i%100:
+				print '[%d, %i] loss: %0.5f, time: %0.3f' % (epoch, epochLoss_svm/i, time() - T)
 		svmLoss['train'].append(epochLoss_svm/i)
 		svm.save_params(exDir)
 
