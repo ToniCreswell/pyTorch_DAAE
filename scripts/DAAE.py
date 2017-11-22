@@ -161,7 +161,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 		'Do classification'
 		testScore = 0
 		for i, data in enumerate(testLoader):
-			x, y = prep_data(data)
+			x, y = prep_data(data, useCUDA=svm.useCUDA)
 			score = svm_score(svm, y, x=x, dae=dae) 
 			testScore+=score
 	testScore /= (i+1)
