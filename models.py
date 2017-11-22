@@ -199,7 +199,7 @@ class LINEAR_SVM(nn.Module):
 			if score.mean().data[0] > bestScore:
 				bestScore = score.mean().data[0]
 				bestThresh = thresh
-			print 'thresh: %f, score %f' % (thresh, score)
+			print 'thresh: %f, score %f' % (thresh, score.mean().data[0])
 		self.thresh = bestThresh
 		print 'best: thresh: %f, score %f' % (bestThresh, bestScore)
 		return bestScore, bestThresh
