@@ -165,9 +165,9 @@ class DIS_Z(nn.Module):
 class LINEAR_SVM(nn.Module): 
     """Support Vector Machine"""
 
-    def __init__(self, c):
+    def __init__(self, nz, c):
         super(LINEAR_SVM, self).__init__()
-        self.fc = nn.Linear(2, 1)
+        self.fc = nn.Linear(nz, 1)
         self.useCUDA = torch.cuda.is_available()
 
     def forward(self, x):
