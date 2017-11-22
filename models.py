@@ -166,7 +166,7 @@ class LINEAR_SVM(nn.Module):
     """Support Vector Machine"""
 
     def __init__(self, c):
-        super(LinearSVM, self).__init__()
+        super(LINEAR_SVM, self).__init__()
         self.fc = nn.Linear(2, 1)
         self.useCUDA = torch.cuda.is_available()
 
