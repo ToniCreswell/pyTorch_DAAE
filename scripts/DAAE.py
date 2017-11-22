@@ -62,7 +62,7 @@ def svm_score(svm, y, x=None, enc=None, dae=None):
 	if enc is None:
 		assert dae is not None
 		enc = dae.encode(x)
-	output = svm.forwad(enc)
+	output = svm.forward(enc)
 	score = svm.binary_class_score(output, y)
 	return score
 
