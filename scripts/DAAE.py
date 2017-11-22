@@ -150,8 +150,8 @@ def train_svm(dae, svm, trainLoader, testLoader, exDir):
 			epochLoss_svm+=loss.data[0]
 
 			if i%100 == 0:
-				print '[%d, %i] loss: %0.5f, time: %0.3f' % (epoch, i, epochLoss_svm/i, time() - T)
-		svmLoss['train'].append(epochLoss_svm/i)
+				print '[%d, %i] loss: %0.5f, time: %0.3f' % (epoch, i, epochLoss_svm/(i+1), time() - T)
+		svmLoss['train'].append(epochLoss_svm/(i+1))
 		svm.save_params(exDir)
 
 		#test loss:
