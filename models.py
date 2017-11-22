@@ -192,7 +192,7 @@ class LINEAR_SVM(nn.Module):
 	def choose_thresh(self, output, target):
 		bestScore=0
 		bestThresh=0
-		for thresh in ap.arange(0,1,0.1):
+		for thresh in np.arange(0,1,0.1):
 			score=binary_class_score(output, target, thresh=thresh)
 			if score > bestScore:
 				bestScore = score
