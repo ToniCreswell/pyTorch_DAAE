@@ -162,7 +162,30 @@ class DIS_Z(nn.Module):
 		print 'TO DO'
 
 
+class LINEAR_SVM(nn.Module): 
+    """Support Vector Machine"""
 
+    def __init__(self, c):
+        super(LinearSVM, self).__init__()
+        self.fc = nn.Linear(2, 1)
+        self.useCUDA = torch.cuda.is_available()
+
+    def forward(self, x):
+        h = self.fc(x)
+        return h
+
+    def loss(self, output, y):
+    	loss = torch.mean(torch.clamp(1 - output * y, min=0))  # hinge loss
+        loss += c * torch.mean(self.fc.weight**2)  # l2 penalty
+
+    def save_params(self, exDir):
+		print 'saving params...'
+		torch.save(self.state_dict(), join(exDir, 'linearSVM_params'))
+
+
+	def load_params(self, exDir):
+		print 'loading params...'
+		self.load_state_dict(torch.load(join(exDir, 'linearSVM_params')))
 
 
 

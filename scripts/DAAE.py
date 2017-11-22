@@ -4,7 +4,7 @@ sys.path.append('../')
 
 from function import prep_data, make_new_folder, plot_losses, save_input_args, shift_x, plot_norm_losses
 from dataload import CELEBA 
-from models import DAE, DIS_Z
+from models import DAE, DIS_Z, LINEAR_SVM
 
 import torch
 from torch import optim
@@ -43,11 +43,12 @@ def get_args():
 	parser.add_argument('--evalMode', action='store_true')
 	parser.add_argument('--comment', type=str)
 	parser.add_argument('--momentum', default=0.9, type=float) 
+	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
 
 	return parser.parse_args()
 
 
-def eval_mode(dae, exDir, M, testLoader):
+def eval_mode(dae, exDir, M, testLoader, svm=None):
 	f = open(join(exDir, 'outputs.txt'), 'w')
 	dae.eval()
 	#reconstruction error and t-SNE
@@ -94,25 +95,15 @@ def eval_mode(dae, exDir, M, testLoader):
 	plt.imshow(robustnessMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.0, vmax=1.0)
 	plt.xlabel('DX')
 	plt.ylabel('DY')
-	plt.title('Log Robustness to shifts in x and y')
+	plt.title('Robustness to shifts in x and y')
 	plt.colorbar()
 	plt.savefig(join(exDir, 'ShiftRobustness.png'))
 
 	fig2 = plt.figure()
 	nEnc, bEnc, _ = plt.hist(enc00.cpu().data.numpy().flatten(), 100, normed=True)
-	# plt.xlabel('value')
-	# plt.ylabel('freq')
-	# plt.title('Histrogram of encodings')
-	# plt.savefig(join(exDir, 'HistEncodings.png'))
-
 	xcorr = dae.corrupt(x)
 	encCorr = dae.encode(xcorr)
-	# fig3 = plt.figure()
 	nEncCorr, bEncCorr, _ = plt.hist(encCorr.cpu().data.numpy().flatten(), 100, normed=True)
-	# plt.xlabel('value')
-	# plt.ylabel('freq')
-	# plt.title('Histrogram of corrupted encodings')
-	# plt.savefig(join(exDir, 'HistCorrEncodings.png'))
 	nNorm, bNorm, _ = plt.hist(np.random.randn(100000), 100, normed=True)
 
 	fig3 = plt.figure()
@@ -125,10 +116,6 @@ def eval_mode(dae, exDir, M, testLoader):
 	plt.legend()
 	plt.savefig(join(exDir, 'HisEnc.png'))
 
-
-
-	#classification
-
 	#sampling
 	print 'sampling...'
 	sampleDir = join(exDir,'FinalSamples')
@@ -137,6 +124,49 @@ def eval_mode(dae, exDir, M, testLoader):
 	except OSError: print 'file alread exists'
 	dae.sample_x(opts.M, sampleDir)
 
+	#classification
+	if svm is not None:
+		'Do classification'
+
+
+def train_svm(dae, svm, trainLoader, testLoader, c, exDir):
+	print 'training svm...'
+	dae.eval()
+
+	svm = LINEAR_SVM(c=c) #model
+	svm.train()
+	if dae.useCUDA:
+		svm.cuda()
+
+	optimSVM = optim.SGD(svm.parameters(), lr=0.1) #optimizer
+
+	svmLoss = {'train':[], 'test':[]}
+	for epoch in range(opts.epochs):
+		epochLoss_svm = 0
+		T = time()
+		for i, data in enumerate(trainLoader):
+			x, y = prep_data(data, useCUDA=svm.useCUDA)  #prep data as a var
+			inputs = dae.encode(x)  #get encodings as input
+			output = svm.forward(inputs)  #get output
+			loss = svm.loss(output, y)  #calc loss
+			optimSVM.zero_grad()  #zero grad
+			loss.backwards()  #backwards
+			optimSVM.setp()  #step
+
+			epochLoss_svm+=loss.data[0]
+		print '[%d] loss: %0.5f, time: %0.3f' % (epoch, epochLoss_svm/i, time() - T)
+		svmLoss['train'].append(epochLoss_svm/i)
+
+		#test loss:
+		xTest, yTest = prep_data(iter(testLoader).next(), useCUDA=svm.useCUDA)
+		testInputs = dae.encode(xTest)
+		testOutputs = svm.forward(testInputs)
+		testLoss = svm.loss(testOutputs, testInputs)
+		svmLoss['test'].append(testLoss.data[0])
+
+		plot_losses(svmLoss, exDir=exDir, epochs=1, title='SVM_loss')
+	
+	return svm
 
 
 if __name__=='__main__':
@@ -161,13 +191,15 @@ if __name__=='__main__':
 		dae.cuda()
 		dis.cuda()
 
-	if opts.loadDAE:
+	if opts.loadDAE or opts.evalMode:  #should load DAE if in eval mode
 		print 'loading DAE...'
 		dae.load_params(opts.load_DAE_from)
-		print 'alpha(dae)=', dae.sigma
-		print 'alpha(opts)=', opts.sigma
+		try:
+			svm.load_params(opts.load_SMV_from) #use SVM @ same location as DAE [may not be one there]
+		except:
+			svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, c=opts.c, exDir=opts.load_DAE_from)
 	if opts.evalMode:
-		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader)
+		eval_mode(dae, opts.load_DAE_from, opts.M, testLoader, svm=svm)
 		opts.maxEpochs = 0
 	else:
 		#Create a folder for this experiment
@@ -260,7 +292,15 @@ if __name__=='__main__':
 		dae.sample_x(opts.M, sampleDir)
 
 	if not opts.evalMode:
-		eval_mode(dae=dae, exDir=exDir, M=20, testLoader=testLoader)
+		eval_mode(dae=dae, exDir=exDir, M=20, testLoader=testLoader, svm=svm)
+
+
+	#Train a linear-SVM classifier on the enocdings
+	svm = train_svm(dae=dae, svm=svm, trainLoader=trainLoader, testLoader=testLoader, c=opts.c, exDir=opts.exDir)
+
+
+
+
 
 
 
