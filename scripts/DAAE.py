@@ -132,12 +132,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 def train_svm(dae, svm, trainLoader, testLoader, c, exDir):
 	print 'training svm...'
 	dae.eval()
-
-	svm = LINEAR_SVM(c=c) #model
 	svm.train()
-	if dae.useCUDA:
-		svm.cuda()
-
 	optimSVM = optim.SGD(svm.parameters(), lr=0.1) #optimizer
 
 	svmLoss = {'train':[], 'test':[]}
@@ -186,10 +181,12 @@ if __name__=='__main__':
 	#Create model
 	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma) #sigma=level of corruption
 	dis = DIS_Z(nz=opts.nz)
+	svm = LINEAR_SVM(c=c) #model
 
 	if dae.useCUDA:
 		dae.cuda()
 		dis.cuda()
+		svm.cuda()
 
 	if opts.loadDAE or opts.evalMode:  #should load DAE if in eval mode
 		print 'loading DAE...'
