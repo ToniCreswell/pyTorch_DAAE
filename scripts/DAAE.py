@@ -126,7 +126,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	fig1 = plt.figure()
 	f.write('\nshift robustenss accuracy min: %0.5f, max: %0.5f' % (classMap.min(), classMap.max()))
 	f.write('\nAccuray Volume (sum of elements in accuracy shift map): %0.5f' % (classMap.sum()))
-	plt.imshow(classMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.5, vmax=1.0)
+	plt.imshow(np.clip(classMap.numpy(), 0.5, 1), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.5, vmax=1.0)
 	plt.xlabel('DX')
 	plt.ylabel('DY')
 	plt.title('Classiciation Robustness to shifts in x and y')
