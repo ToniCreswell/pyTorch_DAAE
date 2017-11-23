@@ -85,4 +85,8 @@ def plot_norm_losses(losses, exDir, epochs=1, title='loss'):
 	fig1.savefig(join(exDir, 'norm_'+title+'_plt.png'))
 
 
-
+def binary_class_score(pred, target, thresh=0.5):
+	predLabel = torch.gt(pred, thresh)
+	print [predLabel, target]
+	classScoreTest = torch.eq(predLabel, target.type_as(predLabel))
+	return  classScoreTest.float().sum()/target.size(0)

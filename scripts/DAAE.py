@@ -46,6 +46,8 @@ def get_args():
 	parser.add_argument('--momentum', default=0.9, type=float) 
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
 	parser.add_argument('--svmLR', type=float, default=1e-3)
+	parser.add_argument('--multimodalZ', action='store_true')
+
 	
 	return parser.parse_args()
 
@@ -165,7 +167,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 			score = svm_score(svm, y, x=x, dae=dae) 
 			testScore+=score
 	testScore /= (i+1)
-	f.write('SVM classification (test) score:'+str(testScore.data[0]))
+	f.write('\nSVM classification (test) score:'+str(testScore.data[0]))
 	f.close()
 
 
