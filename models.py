@@ -14,7 +14,7 @@ from os.path import join
 
 class DAE(nn.Module):
 
-	def __init__(self, nz, imSize, fSize=2, sigma=0.1):  #sigma is the corruption level
+	def __init__(self, nz, imSize, fSize=2, sigma=0.1, mulitmodalZ=False):  #sigma is the corruption level
 		super(DAE, self).__init__()
 		#define layers here
 
@@ -22,6 +22,7 @@ class DAE(nn.Module):
 		self.nz = nz
 		self.imSize = imSize
 		self.sigma = sigma
+		self.mulitmodalZ = mulitmodalZ
 
 		inSize = imSize / ( 2 ** 4)
 		self.inSize = inSize
@@ -55,12 +56,32 @@ class DAE(nn.Module):
 		noise = self.sigma * Variable(torch.randn(x.size())).type_as(x)
 		return x + noise
 
-	def sample_z(self, noSamples):
-		z = torch.randn(noSamples, self.nz)
-		if self.useCUDA:
-			return Variable(z.cuda())
+	def sample_z(self, noSamples, mode=None):
+		if not self.mulitmodalZ:
+			z = torch.randn(noSamples, self.nz)
+			if self.useCUDA:
+				return Variable(z.cuda())
+			else:
+				return Variable(z)
 		else:
-			return Variable(z)
+			#make a 2D sqrt(nz)-by-sqrt(nz) grid of gaussians
+			num = np.sqrt(self.nz) #no of modes in x and y
+			STD = 1./ (4*num)
+			modes = np.arange(-1,1,1./num)
+			print modes
+			p = np.random.uniform(0,1,(noSamples*2))
+
+			if mode is None:
+				mu = modes[np.floor(p * num).astype(int)]
+			else:
+				mu = modes[np.ones(noSamples, 2) * mode]
+
+			z = torch.Tensor(mu).view(-1,2) + STD * torch.randn(noSamples, 2)
+			if self.useCUDA:
+				return Variable(z.cuda())
+			else:
+				return Variable(z)
+
 
 	def decode(self, z):
 		#define the decoder here
@@ -98,12 +119,23 @@ class DAE(nn.Module):
 	def sample_x(self, M, exDir, z=None):
 		if z == None:
 			z = self.sample_z(noSamples=25)
+		if not self.mulitmodalZ:
+			x_i = self.decode(z)
+			save_image(x_i.data, join(exDir, 'samples0.png'))
+			for i in range(M):
+				z_i, x_i = self.forward(x_i) #corruption already in there!
+				save_image(x_i.data, join(exDir, 'samples'+str(i+1)+'.png'))
+		else:
+			#show samples from a few modes
+			maxModes = min(self.nz, 5)  #show at most 5 modes
+			for mode in range(maxModes):
+				z = self.samples_z(noSamples=25, mode=mode)
+				x_i = self.decode(z)
+				save_image(x_i.data, join(exDir, 'samples0.png'))
+				for i in range(M):
+					z_i, x_i = self.forward(x_i) #corruption already in there!
+					save_image(x_i.data, join(exDir, 'mode'+str(mode)+'_samples'+str(i+1)+'.png'))
 
-		x_i = self.decode(z)
-		save_image(x_i.data, join(exDir, 'samples0.png'))
-		for i in range(M):
-			z_i, x_i = self.forward(x_i) #corruption already in there!
-			save_image(x_i.data, join(exDir, 'samples'+str(i+1)+'.png'))
 
 class DIS_Z(nn.Module):
 

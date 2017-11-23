@@ -7,6 +7,8 @@ from models import DAE, DIS_Z
 from dataload import CELEBA
 from function import shift_x
 
+from matplotlib import pyplot as plt
+
 import math
 import numpy as np
 
@@ -78,9 +80,31 @@ def test_shift_x():
 	assert (xShift.data - torch.Tensor(GT)).abs().mean() < 1e-3
 
 
-test_DAE()
-test_DIS_Z()
-test_shift_x()
+def test_DAE_samples_z():
+	print 'testing DAE module'
+	NZ=25
+	FILTER_SIZE=2 #2 for testing
+	BATCH_SIZE = 10000
+	IM_SIZE = 64
+
+	x = Variable(torch.randn(BATCH_SIZE,3,IM_SIZE,IM_SIZE))  #random input
+	dae = DAE(imSize=IM_SIZE, fSize=FILTER_SIZE, nz=NZ, sigma=1.0, mulitmodalZ=True)
+
+	z_sample = dae.sample_z(BATCH_SIZE)
+	print type(z_sample), z_sample.size()
+
+	z = z_sample.cpu().data.numpy()
+	plt.figure()
+	plt.hist2d(z[:,0], z[:,1], (100,100))
+	plt.title('2D hist for DAE with multimodalZ')
+	plt.savefig('2Dhist_z.png')
+
+
+
+# test_DAE()
+# test_DIS_Z()
+# test_shift_x()
+test_DAE_samples_z()
 # test_load_celebA()
 
 
