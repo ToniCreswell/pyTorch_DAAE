@@ -133,13 +133,13 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	plt.colorbar()
 	plt.savefig(join(exDir, 'ClassificationShiftRobustness.png'))
 
-	## Compare histograms for enc, norm and encCorr
+	## Compare histograms for enc, z_samples and encCorr
 	fig2 = plt.figure()
 	nEnc, bEnc, _ = plt.hist(enc00.cpu().data.numpy().flatten(), 100, normed=True)
 	xcorr = dae.corrupt(x)
 	encCorr = dae.encode(xcorr)
 	nEncCorr, bEncCorr, _ = plt.hist(encCorr.cpu().data.numpy().flatten(), 100, normed=True)
-	nNorm, bNorm, _ = plt.hist(np.random.randn(100000), 100, normed=True)
+	nNorm, bNorm, _ = plt.hist(dae.sample_z(10000).cpu().data.numpy().flatten(), 100, normed=True)
 	fig3 = plt.figure()
 	plt.plot(bEnc[1:], nEnc, label='encoding')
 	plt.plot(bEncCorr[1:], nEncCorr, label='corrupted encoding')
