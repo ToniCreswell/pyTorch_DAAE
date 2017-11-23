@@ -123,6 +123,7 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	#Plot shift robusteness classification map
 	fig1 = plt.figure()
 	f.write('\nshift robustenss accuracy min: %0.5f, max: %0.5f' % (classMap.min(), classMap.max()))
+	f.write('\nAccuray Volume (sum of elements in accuracy shift map): %0.5f' % (classMap.sum()))
 	plt.imshow(classMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.0, vmax=1.0)
 	plt.xlabel('DX')
 	plt.ylabel('DY')
@@ -137,7 +138,6 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	encCorr = dae.encode(xcorr)
 	nEncCorr, bEncCorr, _ = plt.hist(encCorr.cpu().data.numpy().flatten(), 100, normed=True)
 	nNorm, bNorm, _ = plt.hist(np.random.randn(100000), 100, normed=True)
-
 	fig3 = plt.figure()
 	plt.plot(bEnc[1:], nEnc, label='encoding')
 	plt.plot(bEncCorr[1:], nEncCorr, label='corrupted encoding')
