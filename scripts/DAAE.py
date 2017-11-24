@@ -90,10 +90,11 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	print 'calculating reconstruction error...'
 	for i, data in enumerate(testLoader):
 		x, y = prep_data(data, useCUDA=dae.useCUDA)
-		zTest, recTest = dae.forward(x)
+		zTest = dae.encode(x)
+		recTest = dae.decode(zTest)
 		recError.append(dae.rec_loss(recTest, x).data[0])
 	meanRecError = np.mean(recError)
-	f.write('mean reconstruction error: %0.5f' % (meanRecError))
+	f.write('mean reconstruction error (non-corrupted): %0.5f' % (meanRecError))
 
 
 	#eval samples ##TODO
