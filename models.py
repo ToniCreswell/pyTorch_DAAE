@@ -174,6 +174,105 @@ class DAE(nn.Module):
 					save_image(x_i.data, join(exDir, 'mode'+str(mode)+'_samples'+str(i+1)+'.png'))
 
 
+class IDAE(nn.Module):
+
+	def __init__(self, nz, imSize, fSize=2, sigma=0.1, M=20):  #sigma is the corruption level
+		super(DAE, self).__init__()
+		#define layers here
+
+		self.fSize = fSize
+		self.nz = nz
+		self.imSize = imSize
+		self.sigma = sigma
+		self.M = M
+
+		inSize = imSize / ( 2 ** 4)
+		self.inSize = inSize
+
+		self.enc1 = nn.Conv2d(3, fSize, 5, stride=2, padding=2)
+		self.enc2 = nn.Conv2d(fSize, fSize * 2, 5, stride=2, padding=2)
+		self.enc3 = nn.Conv2d(fSize * 2, fSize * 4, 5, stride=2, padding=2)
+		self.enc4 = nn.Conv2d(fSize * 4, fSize * 8, 5, stride=2, padding=2)
+		self.enc5 = nn.Linear((fSize * 8) * inSize * inSize, NZ)
+
+		self.dec1 = nn.Linear(NZ, (fSize * 8) * inSize * inSize)
+		self.dec2 = nn.ConvTranspose2d(fSize * 8, fSize * 4, 3, stride=2, padding=1, output_padding=1)
+		self.dec3 = nn.ConvTranspose2d(fSize * 4, fSize * 2, 3, stride=2, padding=1, output_padding=1)
+		self.dec4 = nn.ConvTranspose2d(fSize * 2, fSize, 3, stride=2, padding=1, output_padding=1)
+		self.dec5 = nn.ConvTranspose2d(fSize, 3, 3, stride=2, padding=1, output_padding=1)
+	
+		self.useCUDA = torch.cuda.is_available()
+
+	def norm_prior(self, noSamples=25):
+		z = torch.randn(noSamples, self.nz)
+		return z
+
+	def encode(self, x):
+		#define the encoder here return mu(x) and sigma(x)
+		x = F.relu(self.enc1(x))
+		x = F.relu(self.enc2(x))
+		x = F.relu(self.enc3(x))
+		x = F.relu(self.enc4(x))
+		x = x.view(x.size(0), -1)
+		x = self.enc5(x)
+		
+		return x
+
+	def corrupt(self, x):
+		noise = self.sigma * Variable(torch.randn(x.size())).type_as(x)
+		return x + noise
+
+	def sample_z(self, noSamples=25, mode=None):
+		z = self.norm_prior(noSamples=noSamples)
+		if self.useCUDA:
+			return Variable(z.cuda())
+		else:
+			return Variable(z)
+
+	def decode(self, z):
+		#define the decoder here
+		z = F.relu(self.dec1(z))
+		z = z.view(z.size(0), -1, self.inSize, self.inSize)
+		z = F.relu(self.dec2(z))
+		z = F.relu(self.dec3(z))
+		z = F.relu(self.dec4(z))
+		z = F.sigmoid(self.dec5(z))
+
+		return z
+
+	def forward(self, x): #intergration occurs here
+		# the outputs needed for training
+		x_corr = torch.Tensor(x.size()).fill_(0).type_as(x)
+		for m in range(self.M):
+			x_corr += self.corrupt(x)
+		x_corr /= M
+		z = self.encode(x_corr)
+		return z, self.decode(z)
+
+	def rec_loss(self, rec_x, x, loss='BCE'):
+		if loss == 'BCE':
+			return torch.mean(bce(rec_x, x, size_average=True))  #not averaged over mini-batch if size_average=FALSE and is averaged if =True 
+		elif loss == 'MSE':
+			return torch.mean(F.mse_loss(rec_x, x, size_average=True))
+		else:
+			print 'unknown loss:'+loss
+
+	def save_params(self, exDir):
+		print 'saving params...'
+		torch.save(self.state_dict(), join(exDir, 'dae_params'))
+
+	def load_params(self, exDir):
+		print 'loading params...'
+		self.load_state_dict(torch.load(join(exDir, 'dae_params')))
+
+	def sample_x(self, M, exDir, z=None):
+		if z == None:
+			z = self.sample_z(noSamples=25)
+		
+		x = self.decode(z)
+		save_image(x.data, join(exDir, 'samples.png'))
+		
+
 class DIS_Z(nn.Module):
 
 	'''

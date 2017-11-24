@@ -4,7 +4,7 @@ sys.path.append('../')
 
 from function import prep_data, make_new_folder, plot_losses, save_input_args, shift_x, plot_norm_losses
 from dataload import CELEBA 
-from models import DAE, DIS_Z, LINEAR_SVM
+from models import IDAE, DIS_Z, LINEAR_SVM
 
 import torch
 from torch import optim
@@ -46,23 +46,9 @@ def get_args():
 	parser.add_argument('--momentum', default=0.9, type=float) 
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
 	parser.add_argument('--svmLR', type=float, default=1e-3)
-	parser.add_argument('--multimodalZ', action='store_true')
 
 	
 	return parser.parse_args()
-
-def build_dis(dae, multimodalZ):
-	if not multimodalZ:
-		print '\n ** USING NORMAL PRIOR **'
-		prior = dae.norm_prior
-		NZ = opts.nz
-	else:
-		print '\n ** USING MULTIMODAL PRIOR **'
-		prior = dae.multi_prior
-		NZ = 2
-	dis = DIS_Z(nz=NZ, prior=prior)
-
-	return dis, NZ
 
 def svm_score(svm, y, x=None, enc=None, dae=None):
 	'''
@@ -266,18 +252,9 @@ if __name__=='__main__':
 	print 'Data loaders ready.'
 
 	#Create model
-	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=opts.multimodalZ) #sigma=level of corruption
-	# if not opts.multimodalZ:
-	# 	print '\n ** USING NORMAL PRIOR **'
-	# 	prior = dae.norm_prior
-	# 	NZ = opts.nz
-	# else:
-	# 	print '\n ** USING MULTIMODAL PRIOR **'
-	# 	prior = dae.multi_prior
-	# 	NZ = 2
-	# dis = DIS_Z(nz=NZ, prior=prior)
-	dis, NZ = build_dis(dae=dae, multimodalZ=opts.multimodalZ)
-	svm = LINEAR_SVM(nz=NZ, c=opts.c) #model
+	dae = IDAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, M=opts.M) #sigma=level of corruption
+	dis = DIS_Z(nz=opts.nz)
+	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
 
 
 	if dae.useCUDA:
