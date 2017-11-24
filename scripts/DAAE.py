@@ -62,7 +62,7 @@ def build_dis(dae, multimodalZ):
 		NZ = 2
 	dis = DIS_Z(nz=NZ, prior=prior)
 
-	return dis
+	return dis, NZ
 
 def svm_score(svm, y, x=None, enc=None, dae=None):
 	'''
@@ -271,7 +271,7 @@ if __name__=='__main__':
 	# 	prior = dae.multi_prior
 	# 	NZ = 2
 	# dis = DIS_Z(nz=NZ, prior=prior)
-	dis = build_dis(dae=dae, multimodalZ=opts.multimodalZ)
+	dis, NZ = build_dis(dae=dae, multimodalZ=opts.multimodalZ)
 	svm = LINEAR_SVM(nz=NZ, c=opts.c) #model
 
 
