@@ -245,7 +245,7 @@ class IDAE(nn.Module):
 		x_corr = Variable(torch.Tensor(x.size()).fill_(0)).type_as(x)
 		for m in range(self.M):
 			x_corr += self.corrupt(x)
-		x_corr /= M
+		x_corr /= self.M
 		z = self.encode(x_corr)
 		return z, self.decode(z)
 
