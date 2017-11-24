@@ -197,7 +197,6 @@ class DIS_Z(nn.Module):
 		return self.discriminate(z)
 
 	def dis_loss(self, z):
-		print 'zReal size:', z.size()
 		zReal = Variable(self.prior(z.size(0))).type_as(z)
 		pReal = self.discriminate(zReal)
 
