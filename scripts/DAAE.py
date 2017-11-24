@@ -249,7 +249,7 @@ if __name__=='__main__':
 
 	#Create model
 	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=opts.multimodalZ) #sigma=level of corruption
-	if opts.multimodalZ:
+	if not opts.multimodalZ:
 		print '\n ** USING NORMAL PRIOR **'
 		prior = dae.norm_prior
 	else:
