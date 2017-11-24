@@ -177,7 +177,7 @@ class DAE(nn.Module):
 class IDAE(nn.Module):
 
 	def __init__(self, nz, imSize, fSize=2, sigma=0.1, M=20):  #sigma is the corruption level
-		super(DAE, self).__init__()
+		super(IDAE, self).__init__()
 		#define layers here
 
 		self.fSize = fSize
