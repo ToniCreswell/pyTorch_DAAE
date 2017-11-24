@@ -222,7 +222,7 @@ class IDAE(nn.Module):
 		noise = self.sigma * Variable(torch.randn(x.size())).type_as(x)
 		return x + noise
 
-	def sample_z(self, noSamples=25, mode=None):
+	def sample_z(self, noSamples=25):
 		z = self.norm_prior(noSamples=noSamples)
 		if self.useCUDA:
 			return Variable(z.cuda())
@@ -279,7 +279,7 @@ class DIS_Z(nn.Module):
 	Discriminate between z_real and z_fake vectors
 	'''
 
-	def __init__(self, nz, prior=torch.randn):
+	def __init__(self, nz, prior):  #cannot use torch.randn anymore cause wen called does not know nz
 		super(DIS_Z, self).__init__()
 
 		self.nz = nz

@@ -253,7 +253,7 @@ if __name__=='__main__':
 
 	#Create model
 	dae = IDAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, M=opts.M) #sigma=level of corruption
-	dis = DIS_Z(nz=opts.nz)
+	dis = DIS_Z(nz=opts.nz, prior=dae.norm_prior)
 	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
 
 
