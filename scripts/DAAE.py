@@ -252,11 +252,13 @@ if __name__=='__main__':
 	if not opts.multimodalZ:
 		print '\n ** USING NORMAL PRIOR **'
 		prior = dae.norm_prior
+		NZ = opts.nz
 	else:
 		print '\n ** USING MULTIMODAL PRIOR **'
 		prior = dae.multi_prior
-	dis = DIS_Z(nz=opts.nz, prior=prior)
-	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
+		NZ = 2
+	dis = DIS_Z(nz=NZ, prior=prior)
+	svm = LINEAR_SVM(nz=NZ, c=opts.c) #model
 
 
 	if dae.useCUDA:
