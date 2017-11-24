@@ -125,6 +125,10 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	save_image(torch.Tensor(np.asarray(allShifts)), join(exDir,'shiftImages.png'), nrow=16)
 	print robustnessMap
 
+	print 'save maps as numpy array...'
+	np.save(join(exDir, 'classMap.npy'), classMap)
+	np.save(join(exDir, 'shiftMap.npy'), robustnessMap)
+
 	# plot shift robustenss map
 	fig0 = plt.figure()
 	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
