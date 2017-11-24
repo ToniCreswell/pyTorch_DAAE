@@ -166,7 +166,7 @@ class DAE(nn.Module):
 			#show samples from a few modes
 			maxModes = min(self.nz, 5)  #show at most 5 modes
 			for mode in range(maxModes):
-				z = self.samples_z(noSamples=25, mode=mode)
+				z = self.sample_z(noSamples=25, mode=mode)
 				x_i = self.decode(z)
 				save_image(x_i.data, join(exDir, 'samples0.png'))
 				for i in range(M):
