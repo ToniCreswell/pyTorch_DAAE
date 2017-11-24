@@ -4,7 +4,7 @@ sys.path.append('../')
 
 from function import prep_data, make_new_folder, plot_losses, save_input_args, shift_x, plot_norm_losses
 from dataload import CELEBA 
-from models import DAE, DIS_Z, LINEAR_SVM, PRIOR
+from models import DAE, DIS_Z, LINEAR_SVM
 
 import torch
 from torch import optim
