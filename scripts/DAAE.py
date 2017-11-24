@@ -126,8 +126,8 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	print robustnessMap
 
 	print 'save maps as numpy array...'
-	np.save(join(exDir, 'classMap.npy'), classMap)
-	np.save(join(exDir, 'shiftMap.npy'), robustnessMap)
+	np.save(join(exDir, 'classMap.npy'), classMap.numpy())
+	np.save(join(exDir, 'shiftMap.npy'), robustnessMap.numpy())
 
 	# plot shift robustenss map
 	fig0 = plt.figure()
