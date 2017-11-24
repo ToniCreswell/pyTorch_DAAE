@@ -250,8 +250,10 @@ if __name__=='__main__':
 	#Create model
 	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=opts.multimodalZ) #sigma=level of corruption
 	if opts.multimodalZ:
+		'\n ** USING NORMAL PRIOR **'
 		prior = dae.norm_prior
 	else:
+		'\n ** USING MULTIMODAL PRIOR **'
 		prior = dae.multi_prior
 	dis = DIS_Z(nz=opts.nz, prior=prior)
 	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
