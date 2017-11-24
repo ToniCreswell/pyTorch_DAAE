@@ -252,7 +252,7 @@ if __name__=='__main__':
 	if opts.multimodalZ:
 		prior = dae.norm_prior
 	else:
-		prior = dae.mulit_prior
+		prior = dae.multi_prior
 	dis = DIS_Z(nz=opts.nz, prior=prior)
 	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
 
