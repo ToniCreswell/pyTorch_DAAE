@@ -4,7 +4,7 @@ sys.path.append('../')
 
 from function import prep_data, make_new_folder, plot_losses, save_input_args, shift_x, plot_norm_losses
 from dataload import CELEBA 
-from models import DAE, DIS_Z, LINEAR_SVM
+from models import DAE, DIS_Z, LINEAR_SVM, PRIOR
 
 import torch
 from torch import optim
@@ -248,9 +248,14 @@ if __name__=='__main__':
 	print 'Data loaders ready.'
 
 	#Create model
-	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma) #sigma=level of corruption
-	dis = DIS_Z(nz=opts.nz)
+	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=opts.multimodalZ) #sigma=level of corruption
+	if opts.multimodalZ:
+		prior = dae.norm_prior
+	else:
+		prior = dae.mulit_prior
+	dis = DIS_Z(nz=opts.nz, prior=prior)
 	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
+
 
 	if dae.useCUDA:
 		dae.cuda()

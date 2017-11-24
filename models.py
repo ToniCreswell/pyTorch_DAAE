@@ -12,9 +12,39 @@ import numpy as np
 import os
 from os.path import join
 
+
+# class PRIOR(object):
+# 	def __init__(self, nz):
+
+# 		self.nz = nz
+# 		self.multimodalZ = multimodalZ
+
+# def norm_prior(self, noSamples=25):
+# 	z = torch.randn(noSamples, self.nz)
+# 	return z
+
+# def multi_prior(self, noSamples=25, mode=None):
+# 	#make a 2D sqrt(nz)-by-sqrt(nz) grid of gaussians
+# 	num = np.sqrt(self.nz) #no of modes in x and y
+# 	STD = 1./ (4*num)
+# 	modes = np.arange(-1,1,1./num)
+# 	print modes
+# 	p = np.random.uniform(0,1,(noSamples*2))
+
+# 	if mode is None:
+# 		mu = modes[np.floor(p * num).astype(int)]
+# 	else:
+# 		mu = modes[np.ones(noSamples, 2) * self.mode]
+
+# 	z = torch.Tensor(mu).view(-1,2) + STD * torch.randn(noSamples, 2)
+# 	return z
+
+	#prior = PRIOR(opts.nz, opts.mulitmodealZ, mode=None)
+	#priorFn = PRIOR.norm_prior
+
 class DAE(nn.Module):
 
-	def __init__(self, nz, imSize, fSize=2, sigma=0.1, mulitmodalZ=False):  #sigma is the corruption level
+	def __init__(self, nz, imSize, fSize=2, sigma=0.1, multimodalZ=False):  #sigma is the corruption level
 		super(DAE, self).__init__()
 		#define layers here
 
@@ -22,7 +52,7 @@ class DAE(nn.Module):
 		self.nz = nz
 		self.imSize = imSize
 		self.sigma = sigma
-		self.mulitmodalZ = mulitmodalZ
+		self.multimodalZ = multimodalZ
 
 		inSize = imSize / ( 2 ** 4)
 		self.inSize = inSize
@@ -41,6 +71,26 @@ class DAE(nn.Module):
 	
 		self.useCUDA = torch.cuda.is_available()
 
+	def norm_prior(self, noSamples=25):
+		z = torch.randn(noSamples, self.nz)
+		return z
+
+	def multi_prior(self, noSamples=25, mode=None):
+		#make a 2D sqrt(nz)-by-sqrt(nz) grid of gaussians
+		num = np.sqrt(self.nz) #no of modes in x and y
+		STD = 1./ (4*num)
+		modes = np.arange(-1,1,1./num)
+		print modes
+		p = np.random.uniform(0,1,(noSamples*2))
+
+		if mode is None:
+			mu = modes[np.floor(p * num).astype(int)]
+		else:
+			mu = modes[np.ones(noSamples, 2) * self.mode]
+
+		z = torch.Tensor(mu).view(-1,2) + STD * torch.randn(noSamples, 2)
+		return z
+
 	def encode(self, x):
 		#define the encoder here return mu(x) and sigma(x)
 		x = F.relu(self.enc1(x))
@@ -56,32 +106,15 @@ class DAE(nn.Module):
 		noise = self.sigma * Variable(torch.randn(x.size())).type_as(x)
 		return x + noise
 
-	def sample_z(self, noSamples, mode=None):
-		if not self.mulitmodalZ:
-			z = torch.randn(noSamples, self.nz)
-			if self.useCUDA:
-				return Variable(z.cuda())
-			else:
-				return Variable(z)
+	def sample_z(self, noSamples=25, mode=None):
+		if not self.multimodalZ:
+			z = self.norm_prior(noSamples=noSamples)
 		else:
-			#make a 2D sqrt(nz)-by-sqrt(nz) grid of gaussians
-			num = np.sqrt(self.nz) #no of modes in x and y
-			STD = 1./ (4*num)
-			modes = np.arange(-1,1,1./num)
-			print modes
-			p = np.random.uniform(0,1,(noSamples*2))
-
-			if mode is None:
-				mu = modes[np.floor(p * num).astype(int)]
-			else:
-				mu = modes[np.ones(noSamples, 2) * mode]
-
-			z = torch.Tensor(mu).view(-1,2) + STD * torch.randn(noSamples, 2)
-			if self.useCUDA:
-				return Variable(z.cuda())
-			else:
-				return Variable(z)
-
+			z = self.multi_prior(noSamples=noSamples, mode=mode)
+		if self.useCUDA:
+			return Variable(z.cuda())
+		else:
+			return Variable(z)
 
 	def decode(self, z):
 		#define the decoder here
@@ -221,19 +254,6 @@ class LINEAR_SVM(nn.Module):
 		predLabel = torch.gt(output, thresh)
 		classScoreTest = torch.eq(predLabel, target.type_as(predLabel))
 		return  classScoreTest.float().sum()/target.size(0)
-
-	# def choose_thresh(self, output, target): #not needed for svm use 0 if [-1,1]
-	# 	bestScore=-1.0
-	# 	bestThresh=0.0
-	# 	for thresh in np.arange(0,1,0.1):
-	# 		score=self.binary_class_score(output, target, thresh=thresh)
-	# 		if score.mean().data[0] > bestScore:
-	# 			bestScore = score.mean().data[0]
-	# 			bestThresh = thresh
-	# 		print 'thresh: %f, score %f' % (thresh, score.mean().data[0])
-	# 	self.thresh = bestThresh
-	# 	print 'best: thresh: %f, score %f' % (bestThresh, bestScore)
-	# 	return bestScore, bestThresh
 
 	def save_params(self, exDir):
 		print 'saving params...'
