@@ -90,7 +90,7 @@ class DAE(nn.Module):
 		if mode is None:
 			mu = modes[np.floor(p * num).astype(int)]
 		else:
-			mu = modes[np.ones((noSamples, 2)) * mode]
+			mu = modes[np.ones((noSamples, 2), dtype=int) * int(mode)]
 
 		z = torch.Tensor(mu).view(-1,2) + STD * torch.randn(noSamples, 2)
 		return z
