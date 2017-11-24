@@ -80,7 +80,6 @@ class DAE(nn.Module):
 		num = np.sqrt(self.nz) #no of modes in x and y
 		STD = 1./ (4*num)
 		modes = np.arange(-1,1,1./num)
-		print modes
 		p = np.random.uniform(0,1,(noSamples*2))
 
 		if mode is None:
