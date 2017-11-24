@@ -198,7 +198,7 @@ class DIS_Z(nn.Module):
 
 	def dis_loss(self, z):
 		print 'zReal size:', z.size()
-		zReal = Variable(self.prior(z.size(0), z.size(1))).type_as(z)
+		zReal = Variable(self.prior(z.size(0))).type_as(z)
 		pReal = self.discriminate(zReal)
 
 		zFake = z.detach()  #detach so grad only goes thru dis
