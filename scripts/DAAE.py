@@ -49,7 +49,7 @@ def get_args():
 	parser.add_argument('--multimodalZ', action='store_true')
 
 	
-	return parser.parse_args(multimodalZ)
+	return parser.parse_args()
 
 def build_dis(dae, multimodalZ):
 	if not multimodalZ:
