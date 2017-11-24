@@ -168,7 +168,7 @@ class DAE(nn.Module):
 			for mode in range(maxModes):
 				z = self.sample_z(noSamples=25, mode=mode)
 				x_i = self.decode(z)
-				save_image(x_i.data, join(exDir, 'samples0.png'))
+				save_image(x_i.data, join(exDir, 'mode'+str(mode)+'_samples.png'))
 				for i in range(M):
 					z_i, x_i = self.forward(x_i) #corruption already in there!
 					save_image(x_i.data, join(exDir, 'mode'+str(mode)+'_samples'+str(i+1)+'.png'))
@@ -193,9 +193,9 @@ class IDAE(nn.Module):
 		self.enc2 = nn.Conv2d(fSize, fSize * 2, 5, stride=2, padding=2)
 		self.enc3 = nn.Conv2d(fSize * 2, fSize * 4, 5, stride=2, padding=2)
 		self.enc4 = nn.Conv2d(fSize * 4, fSize * 8, 5, stride=2, padding=2)
-		self.enc5 = nn.Linear((fSize * 8) * inSize * inSize, NZ)
+		self.enc5 = nn.Linear((fSize * 8) * inSize * inSize, nz)
 
-		self.dec1 = nn.Linear(NZ, (fSize * 8) * inSize * inSize)
+		self.dec1 = nn.Linear(nz, (fSize * 8) * inSize * inSize)
 		self.dec2 = nn.ConvTranspose2d(fSize * 8, fSize * 4, 3, stride=2, padding=1, output_padding=1)
 		self.dec3 = nn.ConvTranspose2d(fSize * 4, fSize * 2, 3, stride=2, padding=1, output_padding=1)
 		self.dec4 = nn.ConvTranspose2d(fSize * 2, fSize, 3, stride=2, padding=1, output_padding=1)
