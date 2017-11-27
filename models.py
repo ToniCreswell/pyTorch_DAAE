@@ -88,7 +88,7 @@ class DAE(nn.Module):
 		p = np.random.uniform(0,1,(noSamples*2))
 
 		if mode is None:
-			mu = modes[np.floor(p * num).astype(int)]
+			mu = modes[np.floor(2 * p * num).astype(int)]
 		else:
 			mu = modes[np.ones((noSamples, 2), dtype=int) * int(mode)]
 
