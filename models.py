@@ -83,7 +83,7 @@ class DAE(nn.Module):
 	def multi_prior(self, noSamples=25, mode=None):
 		#make a 2D sqrt(nz)-by-sqrt(nz) grid of gaussians
 		num = np.sqrt(self.nz) #no of modes in x and y
-		STD = 1./ (4*num)
+		STD = 1./ (2*num)
 		modes = np.arange(-1,1,1./num)
 		p = np.random.uniform(0,1,(noSamples*2))
 
