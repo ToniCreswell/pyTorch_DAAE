@@ -154,6 +154,11 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	plt.legend()
 	plt.savefig(join(exDir, 'HisEnc.png'))
 
+	#save all histograms:
+	np.save(join(exDir, 'HistEnc.npy'), [nEnc,bEnc])
+	np.save(join(exDir), 'HistEncCorr.npy', [nEncCorr, bEncCorr])
+	np.save(join(exDir), 'prior.npy', [nNorm, bNorm])
+
 	#sampling
 	print 'sampling...'
 	sampleDir = join(exDir,'FinalSamples')

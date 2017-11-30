@@ -168,6 +168,11 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	plt.legend()
 	plt.savefig(join(exDir, 'HisEnc.png'))
 
+	#save all histograms:
+	np.save(join(exDir, 'HistEnc.npy'), [nEnc,bEnc])
+	np.save(join(exDir), 'HistEncCorr.npy', [nEncCorr, bEncCorr])
+	np.save(join(exDir), 'prior.npy', [nNorm, bNorm])
+
 	#sampling
 	print 'sampling...'
 	sampleDir = join(exDir,'FinalSamples')
@@ -267,15 +272,6 @@ if __name__=='__main__':
 
 	#Create model
 	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=opts.multimodalZ) #sigma=level of corruption
-	# if not opts.multimodalZ:
-	# 	print '\n ** USING NORMAL PRIOR **'
-	# 	prior = dae.norm_prior
-	# 	NZ = opts.nz
-	# else:
-	# 	print '\n ** USING MULTIMODAL PRIOR **'
-	# 	prior = dae.multi_prior
-	# 	NZ = 2
-	# dis = DIS_Z(nz=NZ, prior=prior)
 	dis, NZ = build_dis(dae=dae, multimodalZ=opts.multimodalZ)
 	svm = LINEAR_SVM(nz=NZ, c=opts.c) #model
 
