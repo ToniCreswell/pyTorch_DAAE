@@ -11,6 +11,8 @@ from PIL import Image
 
 class CELEBA(data.Dataset):
     """
+    use 100 samples for testing
+
     Args:
         root (string): Root directory of dataset where directory
             ``cifar-10-batches-py`` exists.
@@ -26,7 +28,7 @@ class CELEBA(data.Dataset):
     """
 
 
-    def __init__(self, root, train=True, transform=None):
+    def __init__(self, root, train=True, transform=None, Ntest=100):
         self.root = os.path.expanduser(root)
         self.train = train  # training set or test set
         self.filename='celebA'
@@ -34,17 +36,17 @@ class CELEBA(data.Dataset):
 
         # now load the picked numpy arrays
         if self.train:
-            self.train_data = np.load(join(self.root, self.filename, 'xTrain.npy'), mmap_mode='r')[100:]
+            self.train_data = np.load(join(self.root, self.filename, 'xTrain.npy'), mmap_mode='r')[Ntest:]
             self.train_data = self.train_data.transpose((0, 2, 3, 1))  # convert to HWC
-            train_labels = np.load(join(self.root, self.filename, 'yTrain.npy'))[100:]
+            train_labels = np.load(join(self.root, self.filename, 'yTrain.npy'))[Ntest:]
             self.train_labels = train_labels.astype(int)/2
             print np.shape(self.train_labels), np.shape(self.train_data)
             print np.unique(self.train_labels)
 
         else:
-            self.test_data = np.load(join(self.root, self.filename, 'xTrain.npy'), mmap_mode='r')[:100]
+            self.test_data = np.load(join(self.root, self.filename, 'xTrain.npy'), mmap_mode='r')[:Ntest]
             self.test_data = self.test_data.transpose((0, 2, 3, 1))  # convert to HWC
-            test_labels = np.load(join(self.root, self.filename, 'yTrain.npy'))[:100]
+            test_labels = np.load(join(self.root, self.filename, 'yTrain.npy'))[:Ntest]
             self.test_labels = test_labels.astype(int)/2
 
 
@@ -85,5 +87,6 @@ class CELEBA(data.Dataset):
         assert os.path.isdir(inDir)
         assert os.path.exists(join(inDir, 'xTrain.npy'))
         assert os.path.exists(join(inDir, 'yTrain.npy'))
+
 
 
