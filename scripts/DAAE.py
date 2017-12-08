@@ -32,7 +32,7 @@ def get_args():
 	parser.add_argument('--nz', default=200, type=int)
 	parser.add_argument('--lr', default=1e-3, type=float)
 	parser.add_argument('--fSize', default=64, type=int)  # multiple of filters to use
-	parser.add_argument('--outDir', default='../../Experiments/DAAE/', type=str)
+	parser.add_argument('--outDir', default='../../Experiments/DAAE1000/', type=str)
 	parser.add_argument('--commit', required=True, type=str)
 	parser.add_argument('--alpha', default=1.0, type=float)  # weight on the adversarial cost
 	parser.add_argument('--sigma', default=0.1, type=float)  # noise level
