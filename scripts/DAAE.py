@@ -45,7 +45,7 @@ def get_args():
 	parser.add_argument('--comment', type=str)
 	parser.add_argument('--momentum', default=0.9, type=float) 
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
-	parser.add_argument('--svmLR', type=float, default=1e-3)
+	parser.add_argument('--svmLR', type=float, default=1e-4)
 	parser.add_argument('--multimodalZ', action='store_true')
 	parser.add_argument('--Ntest', default=100, type=int)
 
