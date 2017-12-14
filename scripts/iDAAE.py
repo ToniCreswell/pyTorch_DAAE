@@ -47,7 +47,7 @@ def get_args():
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
 	parser.add_argument('--svmLR', type=float, default=1e-4)
 	parser.add_argument('--Ntest', default=100, type=int)
-	parser.add_argument('--gpuNo', required=True)
+	parser.add_argument('--gpuNo', required=True, type=int)
 
 	
 	return parser.parse_args()
@@ -265,7 +265,7 @@ if __name__=='__main__':
 
 
 	if dae.useCUDA:
-		torch.cuda.device(opts.gpuNo)
+		torch.cuda.set_device(opts.gpuNo)
 		print 'using gpu:', torch.cuda.current_device()
 		dae.cuda()
 		dis.cuda()
