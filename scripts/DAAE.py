@@ -48,6 +48,7 @@ def get_args():
 	parser.add_argument('--svmLR', type=float, default=1e-4)
 	parser.add_argument('--multimodalZ', action='store_true')
 	parser.add_argument('--Ntest', default=100, type=int)
+	parser.add_argument('--gpuNo', required=True)
 
 	
 	return parser.parse_args()
@@ -278,6 +279,8 @@ if __name__=='__main__':
 
 
 	if dae.useCUDA:
+		torch.cuda.device(opts.gpuNo)
+		print 'using gpu:', torch.cuda.current_device
 		dae.cuda()
 		dis.cuda()
 		svm.cuda()
