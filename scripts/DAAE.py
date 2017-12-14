@@ -48,7 +48,7 @@ def get_args():
 	parser.add_argument('--svmLR', type=float, default=1e-4)
 	parser.add_argument('--multimodalZ', action='store_true')
 	parser.add_argument('--Ntest', default=100, type=int)
-	parser.add_argument('--gpuNo', required=True)
+	parser.add_argument('--gpuNo', required=True, type=int)
 
 	
 	return parser.parse_args()
