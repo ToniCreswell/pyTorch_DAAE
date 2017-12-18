@@ -39,6 +39,7 @@ def get_args():
 	parser.add_argument('--Ntest', default=100, type=int)
 	parser.add_argument('--gpuNo', required=True, type=int)
 	parser.add_argument('--sigma', default=1.0, type=float)
+	parser.add_argument('--multimodalZ', action='store_true')
 
 	
 	return parser.parse_args()
