@@ -124,7 +124,7 @@ if __name__=='__main__':
 	opts = get_args()
 
 	#new folder to save SVM results
-	svmDir = join(opts.load_from,'multiSVM')
+	svmDir = join(opts.load_from,'reverse_order_multiSVM')
 	try:
 		os.mkdir(svmDir)
 	except OSError:
@@ -147,6 +147,7 @@ if __name__=='__main__':
 	f = open(join(svmDir, 'multiSVMoutputs.txt'), 'w')
 
 	attributes = ['Arched_Eyebrows', 'Attractive', 'Bangs', 'Black_Hair', 'Blond_Hair', 'Heavy_Makeup', 'Male', 'Mouth_Slightly_Open', 'No_Beard', 'Wavy_Hair', 'Wearing_Hat', 'Wearing_Lipstick']
+	attributes = attributes[::-1]
 	for i in range(len(attributes)):
 		label = attributes[i]
 		#Load data
