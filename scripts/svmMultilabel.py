@@ -38,6 +38,7 @@ def get_args():
 	parser.add_argument('--svmLR', type=float, default=1e-4)
 	parser.add_argument('--Ntest', default=100, type=int)
 	parser.add_argument('--gpuNo', required=True, type=int)
+	parser.add_argument('--sigma', default=1.0, type=float)
 
 	
 	return parser.parse_args()
