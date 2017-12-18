@@ -127,7 +127,7 @@ if __name__=='__main__':
 	f = open(join(svmDir, 'multiSVMoutputs.txt'), 'w')
 
 	attributes = ['Arched_Eyebrows', 'Attractive', 'Bangs', 'Black_Hair', 'Blond_Hair', 'Heavy_Makeup', 'Male', 'Mouth_Slightly_Open', 'No_Beard', 'Wavy_Hair', 'Wearing_Hat', 'Wearing_Lipstick']
-	for i in range(len(attributes))
+	for i in range(len(attributes)):
 		label = attributes[i]
 		#Load data
 		print 'Prepare data loaders...'
