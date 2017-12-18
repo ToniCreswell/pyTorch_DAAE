@@ -88,100 +88,100 @@ def eval_mode(dae, exDir, M, testLoader, svm=None):
 	dae.eval()
 
 	## reconstruction error ##
-	# recError = []
-	# print 'calculating reconstruction error...'
-	# for i, data in enumerate(testLoader):
-	# 	x, y = prep_data(data, useCUDA=dae.useCUDA)
-	# 	zTest = dae.encode(x)
-	# 	recTest = dae.decode(zTest)
-	# 	recError.append(dae.rec_loss(recTest, x).data[0])
-	# meanRecError = np.mean(recError)
-	# f.write('mean reconstruction error (non-corrupted): %0.5f' % (meanRecError))
+	recError = []
+	print 'calculating reconstruction error...'
+	for i, data in enumerate(testLoader):
+		x, y = prep_data(data, useCUDA=dae.useCUDA)
+		zTest = dae.encode(x)
+		recTest = dae.decode(zTest)
+		recError.append(dae.rec_loss(recTest, x).data[0])
+	meanRecError = np.mean(recError)
+	f.write('mean reconstruction error (non-corrupted): %0.5f' % (meanRecError))
 
 
 	#eval samples ##TODO
 
-	# ## representation robustness (shift) ##
-	# print 'performing robustness plot...'
-	# maxShift = x.size(2)//2
-	# step = 4
-	# axis = range(-maxShift, maxShift, step)
-	# robustnessMap = torch.Tensor(maxShift*2//step, maxShift*2//step).fill_(0)
-	# classMap = torch.Tensor(maxShift*2//step, maxShift*2//step).fill_(0)
-	# x, y = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)  #take a batch of samples
-	# allShifts=[]
-	# enc00 = dae.encode(x)
-	# for j, dx in enumerate(axis):
-	# 	for i, dy in enumerate(axis):
-	# 		xShift = shift_x(x, dy, dx)
-	# 		encDxDy = dae.encode(xShift)
-	# 		# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
-	# 		diff = [torch.dot(encDxDy[k], enc00[k]).data[0]/ ((torch.norm(encDxDy[k])*torch.norm(enc00[k])).data[0] + 1e-6) for k in range(encDxDy.size(0))]
-	# 		robustnessMap[j,i] = np.mean(diff)
-	# 		classMap[j,i] = svm_score(svm, y, enc=encDxDy).data[0]
+	## representation robustness (shift) ##
+	print 'performing robustness plot...'
+	maxShift = x.size(2)//2
+	step = 4
+	axis = range(-maxShift, maxShift, step)
+	robustnessMap = torch.Tensor(maxShift*2//step, maxShift*2//step).fill_(0)
+	classMap = torch.Tensor(maxShift*2//step, maxShift*2//step).fill_(0)
+	x, y = prep_data(iter(testLoader).next(), useCUDA=dae.useCUDA)  #take a batch of samples
+	allShifts=[]
+	enc00 = dae.encode(x)
+	for j, dx in enumerate(axis):
+		for i, dy in enumerate(axis):
+			xShift = shift_x(x, dy, dx)
+			encDxDy = dae.encode(xShift)
+			# diff = [(torch.dot(encDxDy[k], enc00[k])/ (torch.norm(encDxDy[k])*torch.norm(enc00[k]))).data[0] for k in range(encDxDy.size(0))]
+			diff = [torch.dot(encDxDy[k], enc00[k]).data[0]/ ((torch.norm(encDxDy[k])*torch.norm(enc00[k])).data[0] + 1e-6) for k in range(encDxDy.size(0))]
+			robustnessMap[j,i] = np.mean(diff)
+			classMap[j,i] = svm_score(svm, y, enc=encDxDy).data[0]
 
-	# 		allShifts.append(xShift[0].cpu().data.numpy())
+			allShifts.append(xShift[0].cpu().data.numpy())
 
-	# print 'saving images...'
-	# print type(allShifts), np.shape(allShifts)
-	# save_image(torch.Tensor(np.asarray(allShifts)), join(exDir,'shiftImages.png'), nrow=16)
-	# print robustnessMap
+	print 'saving images...'
+	print type(allShifts), np.shape(allShifts)
+	save_image(torch.Tensor(np.asarray(allShifts)), join(exDir,'shiftImages.png'), nrow=16)
+	print robustnessMap
 
-	# print 'save maps as numpy array...'
-	# np.save(join(exDir, 'classMap.npy'), classMap.numpy())
-	# np.save(join(exDir, 'shiftMap.npy'), robustnessMap.numpy())
+	print 'save maps as numpy array...'
+	np.save(join(exDir, 'classMap.npy'), classMap.numpy())
+	np.save(join(exDir, 'shiftMap.npy'), robustnessMap.numpy())
 
-	# # plot shift robustenss map
-	# fig0 = plt.figure()
-	# print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
-	# f.write('\nrobustness min: %0.5f, max: %0.5f' % (robustnessMap.min(), robustnessMap.max()))
-	# plt.imshow(robustnessMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.0, vmax=1.0)
-	# plt.xlabel('DX')
-	# plt.ylabel('DY')
-	# plt.title('Robustness to shifts in x and y')
-	# plt.colorbar()
-	# plt.savefig(join(exDir, 'ShiftRobustness.png'))
+	# plot shift robustenss map
+	fig0 = plt.figure()
+	print robustnessMap.min(), robustnessMap.max(), robustnessMap.size()
+	f.write('\nrobustness min: %0.5f, max: %0.5f' % (robustnessMap.min(), robustnessMap.max()))
+	plt.imshow(robustnessMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.0, vmax=1.0)
+	plt.xlabel('DX')
+	plt.ylabel('DY')
+	plt.title('Robustness to shifts in x and y')
+	plt.colorbar()
+	plt.savefig(join(exDir, 'ShiftRobustness.png'))
 
-	# #Plot shift robusteness classification map
-	# fig1 = plt.figure()
-	# f.write('\nshift robustenss accuracy min: %0.5f, max: %0.5f' % (classMap.min(), classMap.max()))
-	# f.write('\nAccuray Volume (sum of elements in accuracy shift map): %0.5f' % (np.clip(classMap.numpy(), 0.5, 1).sum()))
-	# plt.imshow(classMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.5, vmax=1.0)
-	# plt.xlabel('DX')
-	# plt.ylabel('DY')
-	# plt.title('Classiciation Robustness to shifts in x and y')
-	# plt.colorbar()
-	# plt.savefig(join(exDir, 'ClassificationShiftRobustness.png'))
+	#Plot shift robusteness classification map
+	fig1 = plt.figure()
+	f.write('\nshift robustenss accuracy min: %0.5f, max: %0.5f' % (classMap.min(), classMap.max()))
+	f.write('\nAccuray Volume (sum of elements in accuracy shift map): %0.5f' % (np.clip(classMap.numpy(), 0.5, 1).sum()))
+	plt.imshow(classMap.numpy(), extent=[-maxShift, maxShift, -maxShift, maxShift], vmin=0.5, vmax=1.0)
+	plt.xlabel('DX')
+	plt.ylabel('DY')
+	plt.title('Classiciation Robustness to shifts in x and y')
+	plt.colorbar()
+	plt.savefig(join(exDir, 'ClassificationShiftRobustness.png'))
 
-	# ## Compare histograms for enc, z_samples and encCorr
-	# fig2 = plt.figure()
-	# nEnc, bEnc, _ = plt.hist(enc00.cpu().data.numpy().flatten(), 100, normed=True)
-	# xcorr = dae.corrupt(x)
-	# encCorr = dae.encode(xcorr)
-	# nEncCorr, bEncCorr, _ = plt.hist(encCorr.cpu().data.numpy().flatten(), 100, normed=True)
-	# nNorm, bNorm, _ = plt.hist(dae.sample_z(10000).cpu().data.numpy().flatten(), 100, normed=True)
-	# fig3 = plt.figure()
-	# plt.plot(bEnc[1:], nEnc, label='encoding')
-	# plt.plot(bEncCorr[1:], nEncCorr, label='corrupted encoding')
-	# plt.plot(bNorm[1:], nNorm, label='Normal')
-	# plt.title('Comparing Encodings')
-	# plt.xlabel('Value')
-	# plt.ylabel('pdf')
-	# plt.legend()
-	# plt.savefig(join(exDir, 'HisEnc.png'))
+	## Compare histograms for enc, z_samples and encCorr
+	fig2 = plt.figure()
+	nEnc, bEnc, _ = plt.hist(enc00.cpu().data.numpy().flatten(), 100, normed=True)
+	xcorr = dae.corrupt(x)
+	encCorr = dae.encode(xcorr)
+	nEncCorr, bEncCorr, _ = plt.hist(encCorr.cpu().data.numpy().flatten(), 100, normed=True)
+	nNorm, bNorm, _ = plt.hist(dae.sample_z(10000).cpu().data.numpy().flatten(), 100, normed=True)
+	fig3 = plt.figure()
+	plt.plot(bEnc[1:], nEnc, label='encoding')
+	plt.plot(bEncCorr[1:], nEncCorr, label='corrupted encoding')
+	plt.plot(bNorm[1:], nNorm, label='Normal')
+	plt.title('Comparing Encodings')
+	plt.xlabel('Value')
+	plt.ylabel('pdf')
+	plt.legend()
+	plt.savefig(join(exDir, 'HisEnc.png'))
 
-	# #save all histograms:
-	# np.save(join(exDir, 'HistEnc.npy'), [nEnc,bEnc])
-	# np.save(join(exDir), 'HistEncCorr.npy', [nEncCorr, bEncCorr])
-	# np.save(join(exDir), 'prior.npy', [nNorm, bNorm])
+	#save all histograms:
+	np.save(join(exDir, 'HistEnc.npy'), [nEnc,bEnc])
+	np.save(join(exDir), 'HistEncCorr.npy', [nEncCorr, bEncCorr])
+	np.save(join(exDir), 'prior.npy', [nNorm, bNorm])
 
-	# #sampling
-	# print 'sampling...'
-	# sampleDir = join(exDir,'FinalSamples')
-	# try:
-	# 	os.mkdir(sampleDir)
-	# except OSError: print 'file alread exists'
-	# dae.sample_x(opts.M, sampleDir)
+	#sampling
+	print 'sampling...'
+	sampleDir = join(exDir,'FinalSamples')
+	try:
+		os.mkdir(sampleDir)
+	except OSError: print 'file alread exists'
+	dae.sample_x(opts.M, sampleDir)
 
 	## classification test score
 	if svm is not None:
