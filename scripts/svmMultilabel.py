@@ -39,7 +39,6 @@ def get_args():
 	parser.add_argument('--Ntest', default=100, type=int)
 	parser.add_argument('--gpuNo', required=True, type=int)
 	parser.add_argument('--sigma', default=1.0, type=float)
-	parser.add_argument('--multimodalZ', action='store_true')
 
 	
 	return parser.parse_args()
@@ -116,8 +115,8 @@ if __name__=='__main__':
 		print 'already exsits'
 
 	#load model
-	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=opts.multimodalZ) #sigma=level of corruption
-	svm = LINEAR_SVM(nz=NZ, c=opts.c) #model
+	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=False) #sigma=level of corruption
+	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
 
 	if dae.useCUDA:
 		torch.cuda.set_device(opts.gpuNo)
