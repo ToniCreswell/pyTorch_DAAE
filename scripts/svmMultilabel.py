@@ -25,6 +25,23 @@ import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
 
+def svm_score(svm, y, x=None, enc=None, dae=None):
+	'''
+	EITHER
+		take a data sample x AND a dae
+	OR
+		take an encoding
+	and apply SVM and get score
+
+	'''
+	assert (x is not None) or (enc is not None)
+	if enc is None:
+		assert dae is not None
+		enc = dae.encode(x)
+	output = svm.forward(enc)
+	score = svm.binary_class_score(output, y)
+	return score
+
 def get_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--root', default='/data', type=str) #data/datasets/LabelSwap
@@ -32,7 +49,6 @@ def get_args():
 	parser.add_argument('--maxEpochs', default=10, type=int)
 	parser.add_argument('--nz', default=200, type=int)
 	parser.add_argument('--fSize', default=64, type=int)  # multiple of filters to use
-	parser.add_argument('--outDir', default='../../Experiments/DAAE1000/', type=str)
 	parser.add_argument('--load_from', default=None, type=str)
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
 	parser.add_argument('--svmLR', type=float, default=1e-4)
