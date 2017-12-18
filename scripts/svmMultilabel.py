@@ -122,7 +122,6 @@ if __name__=='__main__':
 		torch.cuda.set_device(opts.gpuNo)
 		print 'using gpu:', torch.cuda.current_device()
 		dae.cuda()
-		dis.cuda()
 		svm.cuda()
 	dae.eval()
 
