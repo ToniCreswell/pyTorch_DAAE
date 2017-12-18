@@ -177,7 +177,8 @@ if __name__=='__main__':
 			noScores+= x.size(0)
 		testScores /= noScores
 		f.write('\n'+label+': SVM classification (test) score:'+str(testScores.data[0]))
-		f.close()
+	
+	f.close()
 
 
 
