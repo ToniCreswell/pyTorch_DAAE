@@ -45,13 +45,13 @@ def svm_score(svm, y, x=None, enc=None, dae=None):
 def get_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--root', default='/data', type=str) #data/datasets/LabelSwap
-	parser.add_argument('--batchSize', default=64, type=int)
-	parser.add_argument('--maxEpochs', default=10, type=int)
+	parser.add_argument('--batchSize', default=100, type=int)
+	parser.add_argument('--maxEpochs', default=20, type=int)
 	parser.add_argument('--nz', default=200, type=int)
 	parser.add_argument('--fSize', default=64, type=int)  # multiple of filters to use
 	parser.add_argument('--load_from', default=None, type=str)
 	parser.add_argument('--c', type=float, default=0.01) #for training the linearSVM for eval
-	parser.add_argument('--svmLR', type=float, default=1e-4)
+	parser.add_argument('--svmLR', type=float, default=2e-4)
 	parser.add_argument('--Ntest', default=100, type=int)
 	parser.add_argument('--gpuNo', required=True, type=int)
 	parser.add_argument('--sigma', default=1.0, type=float)
@@ -174,8 +174,8 @@ if __name__=='__main__':
 			score = svm_score(svm, y, x=x, dae=dae) 
 			testScores+=score * x.size(0)
 			noScores+= x.size(0)
-		testScore /= noScores
-		f.write('\n'+label+': SVM classification (test) score:'+str(testScore.data[0]))
+		testScores /= noScores
+		f.write('\n'+label+': SVM classification (test) score:'+str(testScores.data[0]))
 		f.close()
 
 
