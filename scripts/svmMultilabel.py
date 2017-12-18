@@ -118,6 +118,8 @@ if __name__=='__main__':
 	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=False) #sigma=level of corruption
 	svm = LINEAR_SVM(nz=opts.nz, c=opts.c) #model
 
+	print 'models loaded'
+
 	if dae.useCUDA:
 		torch.cuda.set_device(opts.gpuNo)
 		print 'using gpu:', torch.cuda.current_device()
