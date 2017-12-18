@@ -109,7 +109,10 @@ if __name__=='__main__':
 
 	#new folder to save SVM results
 	svmDir = join(opts.load_from,'multiSVM')
-	os.mkdir(svmDir)
+	try:
+		os.mkdir(svmDir)
+	except OSError:
+		print 'already exsits'
 
 	#load model
 	dae = DAE(nz=opts.nz, imSize=64, fSize=opts.fSize, sigma=opts.sigma, multimodalZ=opts.multimodalZ) #sigma=level of corruption
