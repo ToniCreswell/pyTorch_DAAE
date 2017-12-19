@@ -124,7 +124,7 @@ if __name__=='__main__':
 	opts = get_args()
 
 	#new folder to save SVM results
-	svmDir = join(opts.load_from,'reverse_order_multiSVM')
+	svmDir = join(opts.load_from,'new_multiSVM')
 	try:
 		os.mkdir(svmDir)
 	except OSError:
@@ -145,6 +145,7 @@ if __name__=='__main__':
 	print 'models loaded'
 
 	f = open(join(svmDir, 'multiSVMoutputs.txt'), 'w')
+	f.close()
 
 	attributes = ['Arched_Eyebrows', 'Attractive', 'Bangs', 'Black_Hair', 'Blond_Hair', 'Heavy_Makeup', 'Male', 'Mouth_Slightly_Open', 'No_Beard', 'Wavy_Hair', 'Wearing_Hat', 'Wearing_Lipstick']
 	attributes = attributes[::-1]
@@ -176,9 +177,10 @@ if __name__=='__main__':
 			testScores+=score * x.size(0)
 			noScores+= x.size(0)
 		testScores /= noScores
+
+		f = open(join(svmDir, 'multiSVMoutputs.txt'), 'a')
 		f.write('\n'+label+': SVM classification (test) score:'+str(testScores.data[0]))
-	
-	f.close()
+		f.close()
 
 
 
