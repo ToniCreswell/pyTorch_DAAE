@@ -145,7 +145,7 @@ if __name__=='__main__':
 	print 'models loaded'
 
 	f = open(join(svmDir, 'multiSVMoutputs.txt'), 'a')
-	f.write('-----new experiment-----')
+	f.write('-----new experiment: c= %f, batchSize= %f, epochs= %d -----' % (opts.c, opts.batchSize, opts.maxEpochs))
 	f.close()
 
 	attributes = ['Arched_Eyebrows', 'Attractive', 'Bangs', 'Black_Hair', 'Blond_Hair', 'Heavy_Makeup', 'Male', 'Mouth_Slightly_Open', 'No_Beard', 'Wavy_Hair', 'Wearing_Hat', 'Wearing_Lipstick']
