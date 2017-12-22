@@ -144,11 +144,11 @@ if __name__=='__main__':
 	dae.load_params(opts.load_from)
 	print 'models loaded'
 
-	f = open(join(svmDir, 'multiSVMoutputs.txt'), 'w')
+	f = open(join(svmDir, 'multiSVMoutputs.txt'), 'a')
+	f.write('-----new experiment-----')
 	f.close()
 
 	attributes = ['Arched_Eyebrows', 'Attractive', 'Bangs', 'Black_Hair', 'Blond_Hair', 'Heavy_Makeup', 'Male', 'Mouth_Slightly_Open', 'No_Beard', 'Wavy_Hair', 'Wearing_Hat', 'Wearing_Lipstick']
-	attributes = attributes[::-1]
 	for i in range(len(attributes)):
 		label = attributes[i]
 		#Load data
