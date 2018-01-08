@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-pyTorch http://pytorch.org
+pyTorch http://pytorch.org\
 Other requirements in requirements.txt
 
 ## Prepare the data
