@@ -1,15 +1,31 @@
-1. Run evaluation where a pre-trained SVM exists in the same dir as the DAE
+# Denoising Adversarial Autoencoder
 
-python DAAE.py --evalMode --load_DAE_from=../../Experiments/DAAE/Ex_$EX --commit=eval --alpha=1.0 --sigma=0.0 --root=/data/datasets/LabelSwap/ --loadDAE --M=20 --svmLR=1e-4 --loadSVM
+## Prerequisites
 
-2. Run evaluation where a pre-trained SVM does not exist
+pyTorch http://pytorch.org
+Other requirements in requirements.txt
 
-python DAAE.py --evalMode --load_DAE_from=../../Experiments/DAAE/Ex_$EX --commit=eval --alpha=1.0 --sigma=0.0 --root=/data/datasets/LabelSwap/ --loadDAE --M=20 --svmLR=1e-4
+## Prepare the data
 
-N.B. in eval mode make sure that sigma is the same as the one used for training.
+Run the jupyter notebook: DataToTenosrCeleba_all.ipynb to get data tensors.
 
-3. To train a network and SVM
-python DAAE.py --commit=xxxxx --alpha=1.0 --sigma=0.0 --root=/data/datasets/LabelSwap/ --M=20 --svmLR=1e-4
 
-4. To continue training a DAAE (not fully working yet, does not load dis and does not save lr if weight decay way used)
-NOT IMPLEMENTED COMPLETELY — can just load a DAE net.
+## To run code
+
+
+#1a. To train a DAAE network and SVM
+python DAAE.py --commit=xxxxx --alpha=1.0 --sigma=0.25 --root=path/to/data/tensor  --M=20 --svmLR=1e-4 --Ntest=1000 --gpuNo=0
+
+#1b. To train am iDAAE network and SVM
+python iDAAE.py --commit=xxxxx --alpha=1.0 --sigma=0.25 --root=path/to/data/tensor  --M=10 --svmLR=1e-4 --Ntest=1000 --gpuNo=0
+
+#2. Run evaluation where a pre-trained SVM does not exist
+
+python DAAE.py --evalMode --load_DAE_from=../../Experiments/DAAE/Ex_$EX --commit=eval --alpha=1.0 --sigma=0.25 --root=/data/datasets/LabelSwap/ --loadDAE --M=20 --svmLR=1e-4 --Ntest=1000 --gpuNo=0
+
+#3. Run evaluation where a pre-trained SVM exists in the same dir as the DAE
+
+python DAAE.py --evalMode --load_DAE_from=../../Experiments/DAAE/Ex_$EX --commit=eval --alpha=1.0 --sigma=0.25 --root=/data/datasets/LabelSwap/ --loadDAE --M=20 --svmLR=1e-4 --loadSVM --Ntest=1000 --gpuNo=0
+
+
+
