@@ -6,6 +6,8 @@ pyTorch http://pytorch.org
 
 Other requirements in requirements.txt
 
+Downnload data from: https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AAB06FXaQRUNtjW9ntaoPGvCa?dl=0
+
 ## Prepare the data
 
 Run the jupyter notebook: DataToTenosrCeleba_all.ipynb to get data tensors.
