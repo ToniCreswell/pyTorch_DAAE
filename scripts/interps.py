@@ -79,7 +79,7 @@ if __name__=='__main__':
 	z2 = dae.sample_z(noSamples=10)
 
 	Z_interps = []
-	for a in np.linspace(0.0, 1.0, num=10):
+	for a in np.linspace(0.0, 1.1, num=10):
 		a = Variable(torch.Tensor([a]).cuda())
 		Z_interps.append(z1 + a * z2)
 	Z_interps = torch.cat(Z_interps, dim=0)
@@ -89,7 +89,7 @@ if __name__=='__main__':
 		# Z_interps = Z_interps.cuda()
 
 	x_interps = dae.decode(Z_interps)
-	save_image(x_interps.data, join(exDir, '_interps.png'), nrow=10, normalize=True)
+	save_image(x_interps.data, join(exDir, 'interps.png'), nrow=10, normalize=True)
 
 
 
