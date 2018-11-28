@@ -89,7 +89,7 @@ if __name__=='__main__':
 		# Z_interps = Z_interps.cuda()
 
 	x_interps = dae.decode(Z_interps)
-	save_image(x_interps, join(exDir, '_interps.png'), nrow=10, normalize=True)
+	save_image(x_interps.data, join(exDir, '_interps.png'), nrow=10, normalize=True)
 
 
 
