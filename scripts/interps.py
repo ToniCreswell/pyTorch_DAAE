@@ -79,7 +79,7 @@ if __name__=='__main__':
 	z2 = dae.sample_z(noSamples=10)
 
 	Z_interps = []
-	for a in np.linspace(0.0, 1.1, num=10):
+	for a in np.linspace(0.0, 1.1, num=11):
 		a = Variable(torch.Tensor([a]).cuda())
 		Z_interps.append((1-a)*z1 + a * z2)
 	Z_interps = torch.cat(Z_interps, dim=0)
