@@ -81,7 +81,7 @@ if __name__=='__main__':
 	Z_interps = []
 	for a in np.linspace(0.0, 1.1, num=10):
 		a = Variable(torch.Tensor([a]).cuda())
-		Z_interps.append(z1 + a * z2)
+		Z_interps.append((1-a)*z1 + a * z2)
 	Z_interps = torch.cat(Z_interps, dim=0)
 	print('interps:', np.shape(Z_interps.data))
 
