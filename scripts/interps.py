@@ -8,6 +8,7 @@ from models import IDAE, DIS_Z, LINEAR_SVM
 
 import torch
 from torch import optim
+from torch.autograd import Variable
 
 from torchvision.utils import make_grid, save_image
 from torchvision import transforms, datasets
@@ -79,7 +80,7 @@ if __name__=='__main__':
 
 	Z_interps = []
 	for a in np.linspace(0.0, 1.0, num=10):
-		a = torch.Variable(torch.Tensor([a])).cuda()
+		a = Variable(torch.Tensor([a]).cuda())
 		Z_interps.append(z1 + a * z2)
 	Z_interps = torch.cat(Z_interps, dim=0)
 	print('interps:', np.shape(Z_interps.data))
